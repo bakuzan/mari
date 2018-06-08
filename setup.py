@@ -1,3 +1,5 @@
+import sys
+import msvcrt
 import constants
 from maze import Maze
 
@@ -14,9 +16,12 @@ if __name__ == "__main__":
     print("Help Mari escape the maze!")
     while not maze.is_escaped():
         maze.render()
-        move = input('Use the WASD keys to move Mari\n')
+        print('Use the WASD or the arrow keys to move Mari\n')
+        move = ord(msvcrt.getch())
         while move not in constants.movement_keys:
-            move = input('Press W,A,S, or D to move Mari\n')
-
+            print('Press W,A,S, or D to move Mari\n')
+            move = ord(msvcrt.getch())
+            if move == constants.quit_key:
+                sys.exit()
         maze.move(move)
     print("Mari escaped!")

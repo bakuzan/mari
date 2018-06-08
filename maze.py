@@ -1,3 +1,4 @@
+import random
 import constants
 from point import Point
 
@@ -51,8 +52,12 @@ class Maze:
     """
 
     def _get_random_point(self):
-        """ need to make this random """
-        return Point(1, 15)
+        height = len(self.layout)
+        width = len(self.layout[0])
+        p = Point(random.randrange(width), random.randrange(height))
+        while not self.layout[p.y][p.x] == ' ':
+            p = Point(random.randrange(width), random.randrange(height))
+        return p
 
     def _is_facing(self, move):
         return self.facing == constants.movement_keys[move]
