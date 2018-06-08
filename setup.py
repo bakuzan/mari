@@ -10,6 +10,11 @@ def load_maze():
         return layout.readlines()
 
 
+def check_if_quit(key):
+    if key == constants.quit_key:
+        sys.exit()
+
+
 if __name__ == "__main__":
     lines = load_maze()
     maze = Maze(lines)
@@ -17,13 +22,11 @@ if __name__ == "__main__":
     print("Help Mari escape the maze!")
     while not maze.is_escaped():
         maze.render()
-        print('Use the WASD or the arrow keys to move Mari\n')
-        move = ord(msvcrt.getch())
+        move = None
         while move not in constants.movement_keys:
-            print('Press W,A,S, or D to move Mari\n')
+            print('Use the WASD or the arrow keys to move Mari\n')
             move = ord(msvcrt.getch())
-            if move == constants.quit_key:
-                sys.exit()
+            check_if_quit(move)
         os.system('cls')
         maze.move(move)
     print("Mari escaped!")
