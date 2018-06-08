@@ -1,3 +1,4 @@
+import os
 import sys
 import msvcrt
 import constants
@@ -12,7 +13,7 @@ def load_maze():
 if __name__ == "__main__":
     lines = load_maze()
     maze = Maze(lines)
-
+    os.system('cls')
     print("Help Mari escape the maze!")
     while not maze.is_escaped():
         maze.render()
@@ -23,5 +24,6 @@ if __name__ == "__main__":
             move = ord(msvcrt.getch())
             if move == constants.quit_key:
                 sys.exit()
+        os.system('cls')
         maze.move(move)
     print("Mari escaped!")
