@@ -19,3 +19,7 @@ movement_keys = {
     77: 'right',
 }
 quit_key = 27
+
+maze_point_empty = ' '
+maze_point_wall = '#'
+maze_point_exit = 'X'
