@@ -28,5 +28,6 @@ if __name__ == "__main__":
             move = ord(msvcrt.getch())
             check_if_quit(move)
         os.system('cls')
-        maze.move(move)
+        maze.take_turn(move)
+
     print("Mari escaped!")
