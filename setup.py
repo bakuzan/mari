@@ -1,8 +1,8 @@
 import os
 import sys
 import msvcrt
-import constants
-from maze import Maze
+from maze import constants
+from maze.maze import Maze
 
 
 def load_maze():

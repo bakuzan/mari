@@ -1,7 +1,7 @@
 import random
-import constants
-from point import Point
-from mari import Mari
+from maze import constants
+from .point import Point
+from .character.mari import Mari
 
 
 class Maze:

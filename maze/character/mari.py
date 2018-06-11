@@ -1,9 +1,13 @@
-import constants
-from point import Point
-from character import Character
+from maze import constants
+from maze.point import Point
+from .character import Character
 
 
 class Mari(Character):
+
+    """
+    Player character 
+    """
 
     def __init__(self, maze, starting_point):
         super().__init__(maze, starting_point)

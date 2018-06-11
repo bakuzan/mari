@@ -1,11 +1,11 @@
-import constants
-from point import Point
+from maze import constants
+from maze.point import Point
 
 
 class Character:
 
     """
-    Base class for maze entities
+    Base class for maze entities 
     """
 
     translations = {
