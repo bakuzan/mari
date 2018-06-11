@@ -13,9 +13,9 @@ class Maze:
 
     def __init__(self, layout_lines, starting_point=None, troll_count=3):
         self.layout = [list(line) for line in layout_lines]
-        self.player = Mari(self.layout, self._get_random_point())
+        self.player = Mari(self, self._get_random_point())
         self.trolls = [Troll(self.layout, self._get_random_point())
-                       for i in range(1, 3)]
+                       for i in range(0, 3)]
 
     def render(self):
         player_location = self.player.get_location()
@@ -34,6 +34,7 @@ class Maze:
 
     def take_turn(self, player_move):
         self.player.move(player_move)
+        self._perform_trolls_turn()
 
     def is_escaped(self):
         x, y = self.player.get_location()
@@ -50,3 +51,7 @@ class Maze:
         while not self.layout[p.y][p.x] == constants.maze_point_empty:
             p = Point(random.randrange(width), random.randrange(height))
         return p
+
+    def _perform_trolls_turn(self):
+        for troll in self.trolls:
+            troll.move()

@@ -20,7 +20,7 @@ if __name__ == "__main__":
     maze = Maze(lines)
     os.system('cls')
     print("Help Mari escape the maze!")
-    while not maze.is_escaped():
+    while not maze.is_escaped() and not maze.player.is_caught():
         maze.render()
         move = None
         while move not in constants.movement_keys:
@@ -30,4 +30,9 @@ if __name__ == "__main__":
         os.system('cls')
         maze.take_turn(move)
 
-    print("Mari escaped!")
+    if maze.is_escaped():
+        print("Mari escaped!\nYou win!")
+    elif maze.player.is_caught():
+        print("Mari was caught!\nYou lose!")
+    else:
+        print("Game ended.")

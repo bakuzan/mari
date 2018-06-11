@@ -15,6 +15,10 @@ class Character:
         'right': Point(1, 0)
     }
 
+    valid_move_targets = [
+        constants.maze_point_empty
+    ]
+
     def __init__(self, maze, starting_point):
         self.maze = maze
         self.facing = 'up'
@@ -42,19 +46,20 @@ class Character:
                 return False
 
     def turn(self, move):
-        self.facing = constants.movement_keys[move]
+        pass
 
     """
     internals
     """
 
     def _is_facing(self, move):
-        return self.facing == constants.movement_keys[move]
+        pass
 
     def _can_move(self, translation):
         target_y = self.location.y + translation.y
         target_x = self.location.x + translation.x
-        return self.maze[target_y][target_x] != constants.maze_point_wall
+        print(Character.valid_move_targets)
+        return self.maze[target_y][target_x] in Character.valid_move_targets
 
     def _perform_move(self, translation):
         target_y = self.location.y + translation.y

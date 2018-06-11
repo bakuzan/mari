@@ -9,8 +9,13 @@ class Mari(Character):
     Player character 
     """
 
+    valid_move_targets = Character.valid_move_targets.extend([
+        constants.maze_point_exit
+    ])
+
     def __init__(self, maze, starting_point):
-        super().__init__(maze, starting_point)
+        super().__init__(maze.layout, starting_point)
+        self.game = maze
 
     def render(self):
         return constants.character[self.facing]
@@ -20,9 +25,18 @@ class Mari(Character):
         if not did_action:
             print("Mari can't do that!")
 
+    def turn(self, move):
+        self.facing = constants.movement_keys[move]
+
+    def is_caught(self):
+        return self.location in [troll.get_location() for troll in self.game.trolls]
+
     """
     internals
     """
+
+    def _is_facing(self, move):
+        return self.facing == constants.movement_keys[move]
 
     def _can_push(self, translation):
         x, y = translation
@@ -33,7 +47,7 @@ class Mari(Character):
             return False
         if (beyond_x <= 0 or beyond_x >= len(self.maze[beyond_y]) - 1):
             return False
-        return self.maze[beyond_y][beyond_x] != constants.maze_point_wall
+        return self.maze[beyond_y][beyond_x] == constants.maze_point_empty
 
     def _perform_push(self, translation):
         maze = self.maze[:]
