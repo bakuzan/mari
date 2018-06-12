@@ -1,4 +1,4 @@
-from point import Point
+from .point import Point
 
 translations = {
     'up': Point(0, -1),

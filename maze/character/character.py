@@ -1,13 +1,14 @@
 from maze import constants
 from maze.point import Point
 
+
 class Character:
 
     """
     Base class for maze entities 
     """
 
-    translations = constants.translations
+    translations = constants.translations.copy()
 
     valid_move_targets = [
         constants.maze_point_empty
@@ -52,7 +53,6 @@ class Character:
     def _can_move(self, translation):
         target_y = self.location.y + translation.y
         target_x = self.location.x + translation.x
-        print(Character.valid_move_targets)
         return self.maze[target_y][target_x] in Character.valid_move_targets
 
     def _perform_move(self, translation):

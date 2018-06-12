@@ -53,5 +53,6 @@ class Maze:
         return p
 
     def _perform_trolls_turn(self):
+        player_location = self.player.get_location()
         for troll in self.trolls:
-            troll.move()
+            troll.move(player_location)

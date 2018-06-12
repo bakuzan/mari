@@ -6,6 +6,9 @@ from .path_step import PathStep
 direction_list = [point for name, point in list(
     constants.translations.items())]
 
+accessible_points = [c for _, c in list(
+    constants.character.items())] + [constants.maze_point_empty]
+
 
 def get_neighbour_points(point):
     x, y = point
@@ -17,9 +20,13 @@ def get_next_possible_step(path_step):
     return [PathStep(x + p.x, y + p.y, w + 1) for p in get_neighbour_points(Point(x, y))]
 
 
-def is_point_a_wall(maze, path_step):
-    x, y = path_step
-    return maze[y][x] == constants.maze_point_wall
+def is_point_accessible(maze, path_step):
+    x, y, _ = path_step
+    if y < 0 or y >= len(maze):
+        return False
+    if x < 0 or x >= len(maze[y]):
+        return False
+    return maze[y][x] in accessible_points
 
 
 def is_point_in_queue(queue, path_step):
@@ -32,20 +39,22 @@ def find_path(maze, start, end):
     while step < len(queue):
         current = queue[step]
         next_step = get_next_possible_step(current)
-        next_step = [p for p in next_step if not is_point_a_wall(
+        next_step = [p for p in next_step if is_point_accessible(
             maze, p) and not is_point_in_queue(queue, p)]
-        queue.extend(next_step)
+        queue.append(next_step[:])
         step += 1
     return queue
 
 
 def find_next_move(maze, current, target):
+    print(current, "->", target)
     path = find_path(maze, current, target)
     neighbours = get_neighbour_points(current)
-    options = [ps for ps in path if ps in neighbours]
-    min_step = min(options, key=lambda x: x[2])
-    [move] = [Point(x, y) for x, y, w in options if w == min_step]
-    return move
+    print(neighbours, path)
+    options = [ps for ps in path if Point(ps.x, ps.y) in neighbours]
+    print(options)
+    x, y, _ = min(options, key=lambda x: x[2], default=PathStep(0, 0, 0))
+    return Point(x - current.x, y - current.y)
 
 
 if __name__ == "__main__":
