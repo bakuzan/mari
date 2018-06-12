@@ -1,4 +1,5 @@
 __all__ = [
     'character',
-    'mari'
+    'mari',
+    'troll'
 ]

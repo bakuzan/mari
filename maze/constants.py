@@ -1,3 +1,11 @@
+from point import Point
+
+translations = {
+    'up': Point(0, -1),
+    'left': Point(-1, 0),
+    'down': Point(0, 1),
+    'right': Point(1, 0)
+}
 
 character = {
     'up': '^',

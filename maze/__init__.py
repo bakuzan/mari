@@ -2,5 +2,7 @@ __all__ = [
     'constants',
     'maze',
     'point',
-    'character'
+    'character',
+    'path_finding',
+    'path_step'
 ]

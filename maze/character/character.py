@@ -1,19 +1,13 @@
 from maze import constants
 from maze.point import Point
 
-
 class Character:
 
     """
     Base class for maze entities 
     """
 
-    translations = {
-        'up': Point(0, -1),
-        'left': Point(-1, 0),
-        'down': Point(0, 1),
-        'right': Point(1, 0)
-    }
+    translations = constants.translations
 
     valid_move_targets = [
         constants.maze_point_empty
