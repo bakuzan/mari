@@ -25,9 +25,9 @@ class Character:
     def get_location(self):
         return self.location
 
-    def move(self, move):
-        if not self._is_facing(move):
-            self.turn(move)
+    def move(self, direction):
+        if not self._is_facing(direction):
+            self.turn(direction)
             return True
         else:
             translation = Character.translations[self.facing]
@@ -40,15 +40,15 @@ class Character:
             else:
                 return False
 
-    def turn(self, move):
-        pass
+    def turn(self, direction):
+        self.facing = direction
 
     """
     internals
     """
 
-    def _is_facing(self, move):
-        pass
+    def _is_facing(self, direction):
+        return self.facing == direction
 
     def _can_move(self, translation):
         target_y = self.location.y + translation.y

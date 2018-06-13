@@ -19,13 +19,10 @@ class Mari(Character):
     def render(self):
         return constants.character[self.facing]
 
-    def move(self, translation):
-        did_action = super().move(translation)
+    def move(self, direction):
+        did_action = super().move(direction)
         if not did_action:
             print("Mari can't do that!")
-
-    def turn(self, move):
-        self.facing = constants.movement_keys[move]
 
     def is_caught(self):
         return self.location in [troll.get_location() for troll in self.game.trolls]
@@ -33,9 +30,6 @@ class Mari(Character):
     """
     internals
     """
-
-    def _is_facing(self, move):
-        return self.facing == constants.movement_keys[move]
 
     def _can_push(self, translation):
         x, y = translation

@@ -33,8 +33,9 @@ class Maze:
                     display.append(col)
         print("".join(display))
 
-    def take_turn(self, player_move):
-        self.player.move(player_move)
+    def take_turn(self, key):
+        direction = constants.movement_keys[key]
+        self.player.move(direction)
         self._perform_trolls_turn()
 
     def is_escaped(self):

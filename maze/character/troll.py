@@ -1,10 +1,14 @@
 from random import randrange
 from maze import constants
+from maze.point import Point
 from maze.character.character import Character
 from path_finding import a_star_search
 
 
-def get_facing_direction(translation):
+def get_moving_direction(current_point, target_point):
+    c_x, c_y = current_point
+    t_x, t_y = target_point
+    translation = Point(c_x - t_x, c_y - t_y)
     [facing] = [facing for facing, point in list(
         Character.translations.items()) if point == translation]
     return facing
@@ -28,16 +32,10 @@ class Troll(Character):
     def move(self, player_location):
         path = a_star_search.perform_search(
             self.maze, self.location, player_location)
-        move = path[1] # path[0] == self.location
-        return super().move(move)
-
-    def turn(self, translation):
-        self.facing = get_facing_direction(translation)
+        target_point = path[1] # path[0] == self.location
+        direction = get_moving_direction(self.location, target_point)
+        return super().move(direction)
 
     """
     internals
     """
-
-    def _is_facing(self, translation):
-        print(translation)
-        return self.facing == get_facing_direction(translation)
