@@ -17,7 +17,7 @@ def get_neighbour_points(point):
 
 def get_next_possible_step(path_step):
     x, y, w = path_step
-    return [PathStep(x + p.x, y + p.y, w + 1) for p in get_neighbour_points(Point(x, y))]
+    return [PathStep(p.x, p.y, w + 1) for p in get_neighbour_points(Point(x, y))]
 
 
 def is_point_accessible(maze, path_step):
@@ -36,23 +36,22 @@ def is_point_in_queue(queue, path_step):
 def find_path(maze, start, end):
     queue = [PathStep(end.x, end.y, 0)]
     step = 0
-    while step < len(queue):
+    complete = False
+    while not complete and step < len(queue):
         current = queue[step]
         next_step = get_next_possible_step(current)
         next_step = [p for p in next_step if is_point_accessible(
             maze, p) and not is_point_in_queue(queue, p)]
-        queue.append(next_step[:])
+        queue += next_step[:]
+        complete = start in [Point(x,y) for x,y,_ in queue]
         step += 1
     return queue
 
 
 def find_next_move(maze, current, target):
-    print(current, "->", target)
     path = find_path(maze, current, target)
     neighbours = get_neighbour_points(current)
-    print(neighbours, path)
     options = [ps for ps in path if Point(ps.x, ps.y) in neighbours]
-    print(options)
     x, y, _ = min(options, key=lambda x: x[2], default=PathStep(0, 0, 0))
     return Point(x - current.x, y - current.y)
 
