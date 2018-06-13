@@ -1,6 +1,6 @@
 from maze import constants
 from maze.point import Point
-from .character import Character
+from maze.character.character import Character
 
 
 class Mari(Character):

@@ -1,8 +1,9 @@
 import random
+
 from maze import constants
-from .point import Point
-from .character.mari import Mari
-from .character.troll import Troll
+from maze.point import Point
+from maze.character.mari import Mari
+from maze.character.troll import Troll
 
 
 class Maze:
