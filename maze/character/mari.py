@@ -9,7 +9,7 @@ class Mari(Character):
     Player character 
     """
 
-    valid_move_targets = Character.valid_move_targets + \
+    valid_move_targets = Character.valid_move_targets[:] + \
         [constants.maze_point_exit]
 
     def __init__(self, maze, starting_point):

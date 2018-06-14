@@ -20,11 +20,12 @@ class Troll(Character):
     Enemy character
     """
 
-    valid_move_targets = Character.valid_move_targets + \
+    valid_move_targets = Character.valid_move_targets[:] + \
         [maze_point for k, maze_point in list(constants.character.items())]
 
-    def __init__(self, maze, starting_point):
+    def __init__(self, maze, id, starting_point):
         super().__init__(maze, starting_point)
+        self.id = id
 
     def render(self):
         return "T"
@@ -32,7 +33,7 @@ class Troll(Character):
     def move(self, player_location):
         path = a_star_search.perform_search(
             self.maze, self.location, player_location)
-        target_point = path[1] # path[0] == self.location
+        target_point = path[1]  # path[0] == self.location
         direction = get_moving_direction(self.location, target_point)
         return super().move(direction)
 

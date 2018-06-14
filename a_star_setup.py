@@ -15,8 +15,8 @@ def load_maze():
 
 if __name__ == "__main__":
     layout = load_maze()
-    graph = MazeGridWeighted(layout)
     start, goal = Point(21, 9), Point(1, 22)
+    graph = MazeGridWeighted(layout, goal)
     _, path = a_star_search(graph, start, goal)
 
     display = []

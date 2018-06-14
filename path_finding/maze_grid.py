@@ -17,14 +17,15 @@ def load_maze():
 
 
 class MazeGrid:
-    def __init__(self, layout):
+    def __init__(self, layout, target):
+        self.target = target
         self.grid = [list(line) for line in layout]
         self.width = len(self.grid[0])
         self.height = len(self.grid)
 
     def is_accessible(self, item):
         x, y = item
-        return self.grid[y][x] in accessible_points
+        return self.grid[y][x] in accessible_points or self.target == Point(x, y)
 
     def is_in_bounds(self, item):
         x, y = item
@@ -43,8 +44,8 @@ class MazeGrid:
 
 
 class MazeGridWeighted(MazeGrid):
-    def __init__(self, layout):
-        super().__init__(layout)
+    def __init__(self, layout, target):
+        super().__init__(layout, target)
         self.weights = {}
 
     def cost(self, from_point, to_point):
@@ -53,7 +54,8 @@ class MazeGridWeighted(MazeGrid):
 
 if __name__ == "__main__":
     layout = load_maze()
-    test = MazeGridWeighted(layout)
+    target = Point(1, 22)
+    test = MazeGridWeighted(layout, target)
     for row_i, row in enumerate(test.grid):
         for col_i, col in enumerate(row):
             k = (row_i, col_i)

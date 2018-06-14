@@ -14,7 +14,7 @@ def reconstruct_path(came_from, start, target):
     path = []
     while current != start:
         path.append(current)
-        current = came_from[current]
+        current = came_from.get(current)
     path.append(start)
     path.reverse()
     return path
@@ -47,6 +47,6 @@ def a_star_search(graph, start, target):
 
 
 def perform_search(layout, start, target):
-    graph = MazeGridWeighted(layout)
+    graph = MazeGridWeighted(layout, target)
     _, path = a_star_search(graph, start, target)
     return path
