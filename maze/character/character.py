@@ -14,7 +14,8 @@ class Character:
         constants.maze_point_empty
     ]
 
-    def __init__(self, maze, starting_point):
+    def __init__(self, id, maze, starting_point):
+        self.id = id
         self.maze = maze
         self.facing = 'up'
         self.location = starting_point
@@ -53,7 +54,7 @@ class Character:
     def _can_move(self, translation):
         target_y = self.location.y + translation.y
         target_x = self.location.x + translation.x
-        return self.maze[target_y][target_x] in Character.valid_move_targets
+        return self.maze[target_y][target_x] in self.valid_move_targets
 
     def _perform_move(self, translation):
         target_y = self.location.y + translation.y

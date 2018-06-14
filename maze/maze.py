@@ -15,7 +15,7 @@ class Maze:
     def __init__(self, layout_lines, starting_point=None, troll_count=3):
         self.layout = [list(line) for line in layout_lines]
         self.player = Mari(self, self._get_random_point())
-        self.trolls = [Troll(self.layout, i, self._get_random_point())
+        self.trolls = [Troll(i, self.layout, self._get_random_point())
                        for i in range(0, 3)]
 
     def render(self):

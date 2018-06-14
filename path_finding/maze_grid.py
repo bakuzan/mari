@@ -5,7 +5,9 @@ from maze import constants
 from maze.point import Point
 
 accessible_points = [c for _, c in list(
-    constants.character.items())] + [constants.maze_point_empty, constants.maze_point_exit]
+    constants.character.items())] + [
+    constants.maze_point_empty, constants.maze_point_exit, constants.troll
+]
 
 direction_list = [point for name, point in list(
     constants.translations.items())]

@@ -13,7 +13,7 @@ class Mari(Character):
         [constants.maze_point_exit]
 
     def __init__(self, maze, starting_point):
-        super().__init__(maze.layout, starting_point)
+        super().__init__('mari', maze.layout, starting_point)
         self.game = maze
 
     def render(self):

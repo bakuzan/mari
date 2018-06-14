@@ -7,6 +7,7 @@ translations = {
     'right': Point(1, 0)
 }
 
+troll = 'T'
 character = {
     'up': '^',
     'left': '<',
