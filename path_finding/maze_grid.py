@@ -27,7 +27,7 @@ class MazeGrid:
 
     def is_accessible(self, item):
         x, y = item
-        return self.grid[y][x] in accessible_points or self.target == Point(x, y)
+        return self.grid[y][x] in accessible_points or item == self.target
 
     def is_in_bounds(self, item):
         x, y = item

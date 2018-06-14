@@ -12,7 +12,7 @@ def heuristic(a, b):
 def reconstruct_path(came_from, start, target):
     current = target
     path = []
-    while current != start:
+    while current != start and not current == None:
         path.append(current)
         current = came_from.get(current)
     path.append(start)
