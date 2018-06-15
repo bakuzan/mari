@@ -14,7 +14,7 @@ def carve_passages_from(x, y, grid):
     for d in directions:
         next_x, next_y = x + DX[d], y + DY[d]
 
-        if not next_y < 0 and next_y < len(grid) - 1 and not next_x < 0 and next_x < len(grid[next_y]) - 1 and grid[next_y][next_x] == NOT_VISITED:
+        if not next_y < 0 and next_y < len(grid) and not next_x < 0 and next_x < len(grid[next_y]) and grid[next_y][next_x] == NOT_VISITED:
             grid[y][x] = d
             grid[next_y][next_x] = OPPOSITE[d]
             carve_passages_from(next_x, next_y, grid)
@@ -22,13 +22,38 @@ def carve_passages_from(x, y, grid):
     return grid
 
 
+def loop_carve_passages_from(x, y, grid):
+    height = len(grid) - 1
+    width = len(grid[0]) - 1
+    directions = random.sample(compass_directions, len(compass_directions))
+    stack = [(x, y, directions[:])]
+    while len(stack) != 0:
+        print(stack)
+        cx, cy, c_directions = stack.pop()
+        while len(c_directions) != 0:
+            d = c_directions.pop(0)
+            nx, ny = x + DX[d], y + DY[d]
+            if nx >= 0 and ny >= 0 and nx <= width and ny <= height and grid[ny][nx] == NOT_VISITED:
+                grid[cy][cx] = d
+                grid[ny][nx] = OPPOSITE[d]
+                stack.append((nx, ny, directions[:]))
+        stack.pop(0)
+    return grid
+
+
 def generate(width, height):
     grid = [[NOT_VISITED for c in range(width)] for r in range(height)]
-    maze = carve_passages_from(1, 21, grid)
-    display = []
-    for r, _ in enumerate(maze):
-        for c, _ in enumerate(maze[r]):
-            display.append(str(maze[r][c]))
+    maze = carve_passages_from(1, 22, grid)
+    display = []  # ["_" for _ in maze[0]]
+    for y, _ in enumerate(maze):
+        display.append("|")
+        for x, _ in enumerate(maze[y]):
+            display.append(" " if (grid[y][x] & S != 0) else "_")
+            if grid[y][x] & E != 0:
+                display.append(
+                    " " if ((grid[y][x] | grid[y][x+1]) & S != 0) else "_")
+            else:
+                display.append("|")
         display.append('\n')
     print("".join(display))
 
