@@ -1,45 +1,4 @@
-from random import randrange, sample
-
-NOT_VISITED = 0
-VISITED_PASSAGE = ' '
-N, S, E, W = 1, 2, 4, 8
-compass_directions = [N, S, E, W]
-DX = {E: 1, W: -1, N: 0, S: 0}
-DY = {E: 0, W: 0, N: -1, S: 1}
-OPPOSITE = {E: W, W: E, N: S, S: N}
-
-
-def carve_passages_from(x, y, grid):
-    directions = sample(compass_directions, len(compass_directions))
-    for d in directions:
-        next_x, next_y = x + DX[d], y + DY[d]
-
-        if not next_y < 0 and next_y < len(grid) and not next_x < 0 and next_x < len(grid[next_y]) and grid[next_y][next_x] == NOT_VISITED:
-            grid[y][x] = d
-            grid[next_y][next_x] = OPPOSITE[d]
-            carve_passages_from(next_x, next_y, grid)
-
-    return grid
-
-
-def loop_carve_passages_from(x, y, grid):
-    height = len(grid) - 1
-    width = len(grid[0]) - 1
-    directions = sample(compass_directions, len(compass_directions))
-    stack = [(x, y, directions[:])]
-    while len(stack) != 0:
-        print(stack)
-        cx, cy, c_directions = stack.pop()
-        while len(c_directions) != 0:
-            d = c_directions.pop(0)
-            nx, ny = x + DX[d], y + DY[d]
-            if nx >= 0 and ny >= 0 and nx <= width and ny <= height and grid[ny][nx] == NOT_VISITED:
-                grid[cy][cx] = d
-                grid[ny][nx] = OPPOSITE[d]
-                stack.append((nx, ny, directions[:]))
-        stack.pop(0)
-    return grid
-
+from random import randrange, sample, shuffle
 
 class MazeGenerator:
     """
@@ -47,6 +6,7 @@ class MazeGenerator:
     """
     PASSAGE = 0
     WALL = 1
+    EXIT = 'X'
 
     def __init__(self, w, h):
         self.w = w
@@ -55,6 +15,9 @@ class MazeGenerator:
         self.wMax = (2 * w) + 1
 
     def generate(self):
+        """
+        create a maze layout
+        """
         g = [[self.WALL for c in range(self.wMax)] for r in range(self.hMax)]
         grid = g
 
@@ -64,7 +27,7 @@ class MazeGenerator:
         stack = [(c_row, c_col)]
         grid[c_row][c_col] = self.PASSAGE
 
-        while grid:
+        while stack:
             (c_row, c_col) = stack[-1]
             neighbours = self._get_neighbours(c_row, c_col, grid)
 
@@ -78,6 +41,7 @@ class MazeGenerator:
                 grid[(n_row + c_row) // 2][(n_col + c_col) // 2] = self.PASSAGE
                 stack += [(n_row, n_col)]
         
+        grid = self._cut_exit(grid)
         return grid
 
     """
@@ -101,28 +65,41 @@ class MazeGenerator:
 
         return sample(n_list, len(n_list))
 
+    def _cut_exit(self, grid):
+        """
+        removes 1 square at random from the outer wall
+        """
+        exit_options = []
+        exit_point = None
 
+        while not exit_point:
+            exit_options = self._generate_exit_options(exit_options)
+            shuffle(exit_options)
+            c_x, c_y, (t_x, t_y) = exit_options.pop()
 
-def generate(width, height):
-    grid = [[NOT_VISITED for c in range(width)] for r in range(height)]
-    maze = carve_passages_from(1, 22, grid)
-    display = []  # ["_" for _ in maze[0]]
-    for y, _ in enumerate(maze):
-        display.append("|")
-        for x, _ in enumerate(maze[y]):
-            display.append(" " if (grid[y][x] & S != 0) else "_")
-            if grid[y][x] & E != 0:
-                display.append(
-                    " " if ((grid[y][x] | grid[y][x+1]) & S != 0) else "_")
-            else:
-                display.append("|")
-        display.append('\n')
-    print("".join(display))
+            # if this neighbour is empty, this is a valid exit
+            if grid[c_x + t_x][c_y + t_y] == self.PASSAGE: 
+                exit_point = (c_x, c_y)
 
+        e_x, e_y = exit_point
+        grid[e_y][e_x] = self.EXIT
+        return grid
+    
+    def _generate_exit_options(self, options):
+        """
+        create randomised exit square list
+        """
+        if len(options) != 0:
+            return options
+        else:
+            top_wall = (randrange(1, self.wMax, 2), 0, (0, 1))
+            left_wall = (0, randrange(1, self.hMax, 2), (1, 0))
+            bottom_wall = (randrange(1, self.wMax, 2), self.hMax, (0, -1))
+            right_wall = (self.wMax, randrange(1, self.hMax, 2), (-1, 0))
+            return [top_wall, left_wall, right_wall, bottom_wall]
 
 if __name__ == "__main__":
-    # generate(37, 23)
-    m = MazeGenerator(37,23)
+    m = MazeGenerator(10,10)
     maze = m.generate()
     display = []
     for y, _ in enumerate(maze):
