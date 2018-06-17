@@ -1,4 +1,5 @@
 from random import randrange, sample, shuffle
+from time import sleep
 
 class MazeGenerator:
     """
@@ -14,7 +15,7 @@ class MazeGenerator:
         self.hMax = (2 * h) + 1
         self.wMax = (2 * w) + 1
 
-    def generate(self):
+    def generate(self, animate = False):
         """
         create a maze layout
         """
@@ -40,8 +41,14 @@ class MazeGenerator:
                 grid[n_row][n_col] = self.PASSAGE
                 grid[(n_row + c_row) // 2][(n_col + c_col) // 2] = self.PASSAGE
                 stack += [(n_row, n_col)]
+            
+            if animate:
+                self._render(grid)
+                sleep(0.10)
         
         grid = self._cut_exit(grid)
+        if animate: 
+            self._render(grid)
         return grid
 
     """
@@ -98,12 +105,20 @@ class MazeGenerator:
             right_wall = (self.wMax, randrange(1, self.hMax, 2), (-1, 0))
             return [top_wall, left_wall, right_wall, bottom_wall]
 
+    def _render(self, grid):
+        display = []
+        for y, _ in enumerate(grid):
+            for x, _ in enumerate(grid[y]):
+                sq = grid[y][x]
+                if sq == self.PASSAGE:
+                    display.append(' ')
+                elif sq == self.WALL:
+                    display.append('#')
+                else:
+                    display.append(sq)
+            display.append('\n')
+        print("\r"+"".join(display))
+
 if __name__ == "__main__":
     m = MazeGenerator(10,10)
-    maze = m.generate()
-    display = []
-    for y, _ in enumerate(maze):
-        for x, _ in enumerate(maze[y]):
-            display.append("#" if maze[y][x] == True else ' ')
-        display.append('\n')
-    print("".join(display))
+    maze = m.generate(True)
