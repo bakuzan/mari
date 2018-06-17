@@ -1,13 +1,9 @@
 import os
 import sys
 import msvcrt
+from time import sleep
 from maze import constants
 from maze.maze import Maze
-
-
-def load_maze():
-    with open("./layouts/narrow.txt", "r") as layout:
-        return layout.readlines()
 
 
 def check_if_quit(key):
@@ -16,18 +12,18 @@ def check_if_quit(key):
 
 
 if __name__ == "__main__":
-    lines = load_maze()
-    maze = Maze(lines)
     os.system('cls')
+    maze = Maze(9,9)
+    while not maze.is_ready():
+        sleep(0.5)
     print("Help Mari escape the maze!")
-    while not maze.is_escaped() and not maze.player.is_caught():
+    while not maze.is_escaped() and (not maze.player or not maze.player.is_caught()):
         maze.render()
         move = None
         while move not in constants.movement_keys:
             print('Use the WASD or the arrow keys to move Mari\n')
             move = ord(msvcrt.getch())
             check_if_quit(move)
-        os.system('cls')
         maze.take_turn(move)
 
     if maze.is_escaped():

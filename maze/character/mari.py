@@ -21,8 +21,10 @@ class Mari(Character):
 
     def move(self, direction):
         did_action = super().move(direction)
-        if not did_action:
-            print("Mari can't do that!")
+        if did_action:
+            return ""
+        else:
+            return "Mari can't do that!"
 
     def is_caught(self):
         return self.location in [troll.get_location() for troll in self.game.trolls]

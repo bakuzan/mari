@@ -1,5 +1,6 @@
 from random import randrange, sample, shuffle
 from time import sleep
+from maze import constants
 
 class MazeGenerator:
     """
@@ -7,7 +8,7 @@ class MazeGenerator:
     """
     PASSAGE = 0
     WALL = 1
-    EXIT = 'X'
+    EXIT = constants.maze_point_exit
 
     def __init__(self, w, h):
         self.w = w
@@ -49,6 +50,16 @@ class MazeGenerator:
         grid = self._cut_exit(grid)
         if animate: 
             self._render(grid)
+        
+        for y, _ in enumerate(grid):
+            for x, _ in enumerate(grid[y]):
+                sq = grid[y][x]
+                if sq == self.PASSAGE:
+                    grid[y][x] = constants.maze_point_empty
+                elif sq == self.WALL:
+                    grid[y][x] = constants.maze_point_wall
+                else:
+                    grid[y][x] = sq
         return grid
 
     """
@@ -111,13 +122,13 @@ class MazeGenerator:
             for x, _ in enumerate(grid[y]):
                 sq = grid[y][x]
                 if sq == self.PASSAGE:
-                    display.append(' ')
+                    display.append(constants.maze_point_empty)
                 elif sq == self.WALL:
-                    display.append('#')
+                    display.append(constants.maze_point_wall)
                 else:
                     display.append(sq)
             display.append('\n')
-        print("\r"+"".join(display))
+        print("".join(display), end="\r", flush=True)
 
 if __name__ == "__main__":
     m = MazeGenerator(10,10)
