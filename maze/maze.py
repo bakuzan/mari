@@ -5,6 +5,7 @@ from maze.point import Point
 from maze.character.mari import Mari
 from maze.character.troll import Troll
 from maze.generator import MazeGenerator
+from path_finding import a_star_search
 
 
 class Maze:
@@ -46,7 +47,7 @@ class Maze:
             display.append('\n')
 
         print("".join(display), flush=True)
-        print(self.message)
+        print(self.message, end='\r')
 
     def take_turn(self, key):
         direction = constants.movement_keys[key]
@@ -60,25 +61,47 @@ class Maze:
         else:
             return False
 
+    def is_solvable(self):
+        player_location = self.player.get_location()
+        exit_point = next(Point(row.index(constants.maze_point_exit), y)
+                          for y, row in enumerate(self.layout) if constants.maze_point_exit in row)
+        path = a_star_search.perform_search(
+            self.layout, player_location, exit_point)
+        return len(path) > 1 and self.player.can_move(path[1])
+
     """
     internals 
     """
 
     def _place_entities(self):
         if not self.player:
-            self.player = Mari(self, self._get_random_point())
+            self.player = Mari(self, self._get_random_point(True))
             self.trolls = [Troll(i, self.layout, self._get_random_point())
                            for i in range(0, 3)]
 
-    def _get_random_point(self):
+    def _get_random_point(self, is_player=False):
         height = self.__height
         width = self.__width
+
         p = Point(random.randrange(width), random.randrange(height))
-        while not self.layout[p.y][p.x] == constants.maze_point_empty or self.layout[p.y][p.x] in [t.get_location() for t in self.trolls]:
+        while self._point_not_acceptable(p, is_player):
             p = Point(random.randrange(width), random.randrange(height))
+
         return p
+
+    def _point_not_acceptable(self, p, is_player):
+        if not self.layout[p.y][p.x] == constants.maze_point_empty or self.layout[p.y][p.x] in [t.get_location() for t in self.trolls]:
+            return True
+        elif not is_player and len(a_star_search.perform_search(self.layout, p, self.player.get_location())) < 10:
+            return True
+        else:
+            return False
 
     def _perform_trolls_turn(self):
         player_location = self.player.get_location()
         for troll in self.trolls:
-            troll.move(player_location)
+            t_x, t_y = troll.get_location()
+            if not self.layout[t_y][t_x] == constants.maze_point_wall:
+                troll.move(player_location)
+            else:
+                self.trolls = [t for t in self.trolls if t.id != troll.id]

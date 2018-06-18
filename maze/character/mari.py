@@ -26,6 +26,15 @@ class Mari(Character):
         else:
             return "Mari can't do that!"
 
+    def can_move(self, target_point):
+        c_x, c_y = self.location
+        t_x, t_y = target_point
+        translation = Point(t_x - c_x, t_y - c_y)
+        if translation in [p for _, p in list(self.translations.items())]:
+            return super()._can_move(translation)
+        else:
+            return False
+
     def is_caught(self):
         return self.location in [troll.get_location() for troll in self.game.trolls]
 
