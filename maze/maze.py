@@ -1,4 +1,5 @@
 import random
+from time import sleep
 
 from maze import constants
 from maze.point import Point
@@ -50,7 +51,6 @@ class Maze:
     def take_turn(self, key):
         direction = constants.movement_keys[key]
         self.message = self.player.move(direction)
-        self._perform_trolls_turn()
 
     def is_escaped(self):
         if self.player:
@@ -65,11 +65,20 @@ class Maze:
                           for y, row in enumerate(self.layout) if constants.maze_point_exit in row)
         path = a_star_search.perform_search(
             self.layout, player_location, exit_point)
-        return True
-        # TODO
-        # needs improving as current thinks the game has failed
-        # even if you can push a block out of the way
-        # return len(path) > 1 and self.player.can_move(path[1])
+        if len(path) > 1 and self.player.can_move(path[1]):
+            return True
+        else:
+            print('blocked!', path)
+            # TODO
+            # check if moving a block will make solvable.
+            return True
+        
+    def game_is_playable(self):
+        return (
+            not self.is_escaped() and
+            (not self.player or not self.player.is_caught()) and
+            (not self.player or self.is_solvable())
+        )
 
     """
     internals 
@@ -80,6 +89,7 @@ class Maze:
             self.player = Mari(self, self._get_random_point(True))
             self.trolls = [Troll(i, self.layout, self._get_random_point())
                            for i in range(0, 3)]
+            self._start_trolls()
 
     def _get_random_point(self, is_player=False):
         height = len(self.layout)
@@ -107,3 +117,11 @@ class Maze:
                 troll.move(player_location)
             else:
                 self.trolls = [t for t in self.trolls if t.id != troll.id]
+
+    def _start_trolls(self):
+        while self.game_is_playable():
+            sleep(0.5)
+            print('move trolls!')
+            self._perform_trolls_turn()
+            self.render()
+            sleep(0.5)
