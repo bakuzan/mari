@@ -15,8 +15,6 @@ class Maze:
     """
 
     def __init__(self, w, h, troll_count=3):
-        self.__width = w
-        self.__height = h
         self.__factory = MazeGenerator(w, h)
         self.layout = self.__factory.generate(True)
         self.player = None
@@ -67,7 +65,11 @@ class Maze:
                           for y, row in enumerate(self.layout) if constants.maze_point_exit in row)
         path = a_star_search.perform_search(
             self.layout, player_location, exit_point)
-        return len(path) > 1 and self.player.can_move(path[1])
+        return True
+        # TODO
+        # needs improving as current thinks the game has failed
+        # even if you can push a block out of the way
+        # return len(path) > 1 and self.player.can_move(path[1])
 
     """
     internals 
@@ -80,8 +82,8 @@ class Maze:
                            for i in range(0, 3)]
 
     def _get_random_point(self, is_player=False):
-        height = self.__height
-        width = self.__width
+        height = len(self.layout)
+        width = len(self.layout[0])
 
         p = Point(random.randrange(width), random.randrange(height))
         while self._point_not_acceptable(p, is_player):
