@@ -18,10 +18,10 @@ if __name__ == "__main__":
         sleep(0.5)
     print("Help Mari escape the maze!")
     while not maze.is_escaped() and (not maze.player or not maze.player.is_caught()):
+        print('Use the WASD or the arrow keys to move Mari')
         maze.render()
         move = None
         while move not in constants.movement_keys:
-            print('Use the WASD or the arrow keys to move Mari\n')
             move = ord(msvcrt.getch())
             check_if_quit(move)
         maze.take_turn(move)

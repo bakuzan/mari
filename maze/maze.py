@@ -23,7 +23,7 @@ class Maze:
         self.message = ""
 
     def is_ready(self):
-        if not self.layout: 
+        if not self.layout:
             return False
         return True
 
@@ -37,15 +37,16 @@ class Maze:
                 if current_point == player_location:
                     display.append(self.player.render())
                 elif current_point in [t.get_location() for t in self.trolls]:
-                    trolls = [t for t in self.trolls if current_point == t.get_location()]
+                    trolls = [
+                        t for t in self.trolls if current_point == t.get_location()]
                     troll = trolls[0]
                     display.append(troll.render())
                 else:
                     display.append(col)
             display.append('\n')
 
-        print("".join(display), end='\r', flush=True)
-        print(self.message, end='\r')
+        print("".join(display), flush=True)
+        print(self.message)
 
     def take_turn(self, key):
         direction = constants.movement_keys[key]
@@ -67,7 +68,7 @@ class Maze:
         if not self.player:
             self.player = Mari(self, self._get_random_point())
             self.trolls = [Troll(i, self.layout, self._get_random_point())
-                        for i in range(0, 3)]
+                           for i in range(0, 3)]
 
     def _get_random_point(self):
         height = self.__height

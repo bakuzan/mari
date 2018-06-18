@@ -128,7 +128,7 @@ class MazeGenerator:
                 else:
                     display.append(sq)
             display.append('\n')
-        print("".join(display), end="\r", flush=True)
+        print("".join(display), flush=True)
 
 if __name__ == "__main__":
     m = MazeGenerator(10,10)
