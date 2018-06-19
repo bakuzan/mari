@@ -47,6 +47,7 @@ class Viewer:
         return "Help Mari escape the maze!\nUse the WASD or the arrow keys to move Mari"
 
     def __handle_key_press(self, event):
+        print(event.keysym)
         if event.keysym != 'Escape':
             if self.__on_user_input:
                 self.__on_user_input(event.keysym)

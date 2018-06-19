@@ -55,8 +55,11 @@ class Maze:
         # print(self.message, end='\r')
 
     def take_turn(self, key):
-        direction = constants.movement_keys[key]
-        self.message = self.player.move(direction)
+        key = str(key).lower()
+        direction = constants.key_press.get(key)
+        if direction and self.is_ready():
+            self.message = self.player.move(direction)
+            self.render()
 
     def is_escaped(self):
         if self.player:
@@ -138,6 +141,7 @@ class Maze:
                 troll.move(player_location)
             else:
                 self.trolls = [t for t in self.trolls if t.id != troll.id]
+        self.render()
         self._start_trolls()
 
     def _start_trolls(self):

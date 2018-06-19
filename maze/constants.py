@@ -22,16 +22,23 @@ movement_keys = {
     97: 'left',
     115: 'down',
     100: 'right',
-    'w': 'up',
-    'a': 'left',
-    's': 'down',
-    'd': 'right',
     72: 'up',
     75: 'left',
     80: 'down',
     77: 'right',
 }
 quit_key = 27
+
+key_press = {
+    'w': 'up',
+    'a': 'left',
+    's': 'down',
+    'd': 'right',
+    'up': 'up',
+    'left': 'left',
+    'down': 'down',
+    'right': 'right',
+}
 
 maze_point_empty = ' '
 maze_point_wall = '#'
