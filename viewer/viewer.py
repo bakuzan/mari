@@ -23,16 +23,19 @@ class Viewer:
         self.__alert.pack()
 
     def start(self):
+        print('start')
         self.__root.mainloop()
 
-    def call(self, delay, action):
-        self.__root.after(delay, action)
+    def call(self, delay, action, *args):
+        print('call', args)
+        self.__root.after(delay, action, args)
 
     def update(self, text):
         self.__display.configure(state=tk.NORMAL)
         self.__display.delete(1.0, 'end')
         self.__display.insert(0.0, text)
         self.__display.configure(state=tk.DISABLED)
+        print('update display')
         self.__root.update_idletasks()
 
     def set_alert(self, text):
@@ -51,6 +54,7 @@ class Viewer:
         if event.keysym != 'Escape':
             if self.__on_user_input:
                 self.__on_user_input(event.keysym)
+                self.__root.update_idletasks()
             else:
                 print(event.keysym)
         else:

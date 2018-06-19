@@ -13,18 +13,20 @@ from viewer.viewer import Viewer
 class Maze:
     """
     Holds all the information about the current maze
-    Provides method to interact with the game. 
+    Provides method to interact with the game.
     """
 
     def __init__(self, w, h, troll_count=3):
-        self.__window = Viewer(self.take_turn)
-        self.__window.start()
-        self.__factory = MazeGenerator(w, h, output=self.__window.update)
-
-        self.layout = self.__factory.generate(True)
+        self.layout = None
         self.player = None
         self.trolls = []
         self.message = ""
+
+        self.__window = Viewer(self.take_turn)
+        self.__factory = MazeGenerator(w, h, window=self.__window)
+        self.__window.call(1000, self.__factory.generate, True)
+        self.__window.start()
+        self.layout = self.__factory.grid()
 
     def is_ready(self):
         if not self.layout:
@@ -145,4 +147,4 @@ class Maze:
         self._start_trolls()
 
     def _start_trolls(self):
-        self.__window.call(2, self._perform_trolls_turn)
+        self.__window.call(2000, self._perform_trolls_turn)

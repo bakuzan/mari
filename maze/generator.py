@@ -1,3 +1,4 @@
+import functools
 from random import randrange, sample, shuffle
 from time import sleep
 from maze import constants
@@ -11,12 +12,16 @@ class MazeGenerator:
     WALL = 1
     EXIT = constants.maze_point_exit
 
-    def __init__(self, w, h, output=None):
+    def __init__(self, w, h, window=None):
+        self.__grid = None
         self.w = w
         self.h = h
         self.hMax = (2 * h) + 1
         self.wMax = (2 * w) + 1
-        self.__output = output
+        self.__window = window
+
+    def grid(self):
+        return self.__grid
 
     def generate(self, animate=False):
         """
@@ -46,8 +51,9 @@ class MazeGenerator:
                 stack += [(n_row, n_col)]
 
             if animate:
-                self._render(grid)
-                sleep(0.10)
+                print("animate generator")
+                self.__window.call(250, self._render, grid)
+                
 
         grid = self._cut_exit(grid)
         if animate:
@@ -62,6 +68,7 @@ class MazeGenerator:
                     grid[y][x] = constants.maze_point_wall
                 else:
                     grid[y][x] = sq
+        self.__grid = grid
         return grid
 
     """
@@ -131,9 +138,10 @@ class MazeGenerator:
                     display.append(sq)
             display.append('\n')
 
-        maze = "".join(display)
-        if self.__output:
-            self.__output(maze)
+        maze = str("".join(display))
+        if self.__window:
+            print('render maze ---')
+            self.__window.update(maze)
         else:
             print(maze, flush=True)
 
