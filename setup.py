@@ -17,22 +17,12 @@ if __name__ == "__main__":
     while not maze.is_ready():
         sleep(0.5)
 
-    print("Help Mari escape the maze!")
+    # print("Help Mari escape the maze!")
     while maze.game_is_playable():
-        print('Use the WASD or the arrow keys to move Mari')
+        # print('Use the WASD or the arrow keys to move Mari')
         maze.render()
         move = None
         while move not in constants.movement_keys:
             move = ord(msvcrt.getch())
             check_if_quit(move)
         maze.take_turn(move)
-
-    maze.render()
-    if maze.is_escaped():
-        print("Mari escaped!\nYou win!")
-    elif maze.player.is_caught():
-        print("Mari was caught!\nYou lose!")
-    elif not maze.is_solvable():
-        print("Mari is trapped!\nYou lose!")
-    else:
-        print("Game ended.")

@@ -2,6 +2,7 @@ from random import randrange, sample, shuffle
 from time import sleep
 from maze import constants
 
+
 class MazeGenerator:
     """
     Generator object for maze
@@ -10,13 +11,14 @@ class MazeGenerator:
     WALL = 1
     EXIT = constants.maze_point_exit
 
-    def __init__(self, w, h):
+    def __init__(self, w, h, output=None):
         self.w = w
         self.h = h
         self.hMax = (2 * h) + 1
         self.wMax = (2 * w) + 1
+        self.__output = output
 
-    def generate(self, animate = False):
+    def generate(self, animate=False):
         """
         create a maze layout
         """
@@ -42,15 +44,15 @@ class MazeGenerator:
                 grid[n_row][n_col] = self.PASSAGE
                 grid[(n_row + c_row) // 2][(n_col + c_col) // 2] = self.PASSAGE
                 stack += [(n_row, n_col)]
-            
+
             if animate:
                 self._render(grid)
                 sleep(0.10)
-        
+
         grid = self._cut_exit(grid)
-        if animate: 
+        if animate:
             self._render(grid)
-        
+
         for y, _ in enumerate(grid):
             for x, _ in enumerate(grid[y]):
                 sq = grid[y][x]
@@ -96,13 +98,13 @@ class MazeGenerator:
             c_x, c_y, (t_x, t_y) = exit_options.pop()
 
             # if this neighbour is empty, this is a valid exit
-            if grid[c_x + t_x][c_y + t_y] == self.PASSAGE: 
+            if grid[c_x + t_x][c_y + t_y] == self.PASSAGE:
                 exit_point = (c_x, c_y)
 
         e_x, e_y = exit_point
         grid[e_y][e_x] = self.EXIT
         return grid
-    
+
     def _generate_exit_options(self, options):
         """
         create randomised exit square list
@@ -128,8 +130,14 @@ class MazeGenerator:
                 else:
                     display.append(sq)
             display.append('\n')
-        print("".join(display), flush=True)
+
+        maze = "".join(display)
+        if self.__output:
+            self.__output(maze)
+        else:
+            print(maze, flush=True)
+
 
 if __name__ == "__main__":
-    m = MazeGenerator(10,10)
+    m = MazeGenerator(10, 10)
     maze = m.generate(True)

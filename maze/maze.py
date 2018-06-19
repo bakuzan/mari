@@ -7,16 +7,20 @@ from maze.character.mari import Mari
 from maze.character.troll import Troll
 from maze.generator import MazeGenerator
 from path_finding import a_star_search
+from viewer.viewer import Viewer
 
 
 class Maze:
     """
     Holds all the information about the current maze
-    Provides method to interact with the game.
+    Provides method to interact with the game. 
     """
 
     def __init__(self, w, h, troll_count=3):
-        self.__factory = MazeGenerator(w, h)
+        self.__window = Viewer(self.take_turn)
+        self.__window.start()
+        self.__factory = MazeGenerator(w, h, output=self.__window.update)
+
         self.layout = self.__factory.generate(True)
         self.player = None
         self.trolls = []
@@ -45,8 +49,10 @@ class Maze:
                     display.append(col)
             display.append('\n')
 
-        print("".join(display), flush=True)
-        print(self.message, end='\r')
+        self.__window.update("".join(display))
+        self.__window.set_alert(self.message)
+        # print("".join(display), flush=True)
+        # print(self.message, end='\r')
 
     def take_turn(self, key):
         direction = constants.movement_keys[key]
@@ -72,17 +78,32 @@ class Maze:
             # TODO
             # check if moving a block will make solvable.
             return True
-        
+
     def game_is_playable(self):
-        return (
+        is_playable = (
             not self.is_escaped() and
             (not self.player or not self.player.is_caught()) and
             (not self.player or self.is_solvable())
         )
 
+        if not is_playable:
+            self._display_game_ended_message()
+
+        return is_playable
+
     """
     internals 
     """
+
+    def _display_game_ended_message(self):
+        if self.is_escaped():
+            self.__window.set_alert("Mari escaped!\nYou win!")
+        elif self.player.is_caught():
+            self.__window.set_alert("Mari was caught!\nYou lose!")
+        elif not self.is_solvable():
+            self.__window.set_alert("Mari is trapped!\nYou lose!")
+        else:
+            self.__window.set_alert("Game ended.")
 
     def _place_entities(self):
         if not self.player:
@@ -117,11 +138,7 @@ class Maze:
                 troll.move(player_location)
             else:
                 self.trolls = [t for t in self.trolls if t.id != troll.id]
+        self._start_trolls()
 
     def _start_trolls(self):
-        while self.game_is_playable():
-            sleep(0.5)
-            print('move trolls!')
-            self._perform_trolls_turn()
-            self.render()
-            sleep(0.5)
+        self.__window.call(2, self._perform_trolls_turn)
