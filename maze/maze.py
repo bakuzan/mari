@@ -18,19 +18,14 @@ class Maze:
     """
 
     def __init__(self, w, h, troll_count=3):
-        self.layout = None
-        self.player = None
-        self.trolls = []
-        self.message = ""
+        self.__w = w
+        self.__h = h
 
         self.__window = Viewer(on_play=self.start_game,
-                               on_user_input=self.take_turn)
-        self.__factory = MazeGenerator(w, h, window=self.__window)
+                               on_user_input=self.take_turn, on_reset=self.reset_maze)
+        self.__factory = MazeGenerator(self.__w, self.__h, window=self.__window)
 
-        t = Thread(target=self.__factory.generate, args=(True,))
-        t.daemon = True
-        t.start()
-
+        self.reset_maze()
         self.__window.start()
 
     def is_ready(self):
@@ -44,6 +39,16 @@ class Maze:
         self.render()
 
         t = Thread(target=self._start_trolls)
+        t.daemon = True
+        t.start()
+
+    def reset_maze(self):
+        self.layout = None
+        self.player = None
+        self.trolls = []
+        self.message = ""
+        
+        t = Thread(target=self.__factory.generate, args=(True,))
         t.daemon = True
         t.start()
 
@@ -126,6 +131,8 @@ class Maze:
             self.__window.set_alert("Mari is trapped!\nYou lose!")
         else:
             self.__window.set_alert("Game ended.")
+        
+        self.__window.enable_new_game()
 
     def _place_entities(self):
         if not self.player:

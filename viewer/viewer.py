@@ -3,10 +3,13 @@ import tkinter as tk
 
 class Viewer:
     def __init__(self, **kwargs):
-        on_play, on_user_input = kwargs.pop(
-            'on_play', None), kwargs.pop('on_user_input', None)
+        on_play, on_user_input, on_reset = kwargs.pop(
+            'on_play', None), kwargs.pop('on_user_input', None), kwargs.pop('on_reset', None)
 
         self.__on_user_input = on_user_input
+        self.__on_play = on_play
+        self.__on_reset = on_reset
+
         self.__root = tk.Tk()
         self.__root.title('Maze escape')
         self.__root.bind('<KeyPress>', self.__handle_key_press)
@@ -19,8 +22,11 @@ class Viewer:
         self.__info = tk.Label(self.__container, text=self._get_info())
         self.__info.pack()
 
-        self.__play = tk.Button(self.__container, text="Play", command=on_play)
+        self.__play = tk.Button(self.__container, text="Play", command=self.play_game)
         self.__play.pack()
+
+        self.__reset = tk.Button(self.__container, text="Reset", command=self.reset_game, state=tk.DISABLED)
+        self.__reset.pack()
 
         self.__display = tk.Text(self.__container, state=tk.DISABLED)
         self.__display.pack()
@@ -31,6 +37,18 @@ class Viewer:
     def start(self):
         print('start')
         self.__root.mainloop()
+
+    def play_game(self):
+        self.__on_play()
+        self.__play.configure(state=tk.DISABLED)
+
+    def enable_new_game(self):
+        self.__reset.configure(state=tk.NORMAL)
+
+    def reset_game(self):
+        self.__on_reset()
+        self.__reset.configure(state=tk.DISABLED)
+        self.__play.configure(state=tk.NORMAL)
 
     def call(self, delay, action, arg=None):
         print('call')
