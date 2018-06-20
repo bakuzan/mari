@@ -161,6 +161,6 @@ class Maze:
         self._start_trolls()
 
     def _start_trolls(self):
-        sleep(1)
+        sleep(0.66)
         if self.trolls and len(self.trolls) > 0 and self.game_is_playable():
             self._perform_trolls_turn()
