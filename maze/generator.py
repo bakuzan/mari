@@ -27,6 +27,7 @@ class MazeGenerator:
         """
         create a maze layout
         """
+        print("gen", animate)
         g = [[self.WALL for c in range(self.wMax)] for r in range(self.hMax)]
         grid = g
 
@@ -52,8 +53,7 @@ class MazeGenerator:
 
             if animate:
                 print("animate generator")
-                self.__window.call(250, self._render, grid)
-                
+                self.__window.call(100, self._render, grid)
 
         grid = self._cut_exit(grid)
         if animate:
@@ -138,9 +138,8 @@ class MazeGenerator:
                     display.append(sq)
             display.append('\n')
 
-        maze = str("".join(display))
+        maze = "".join(display)
         if self.__window:
-            print('render maze ---')
             self.__window.update(maze)
         else:
             print(maze, flush=True)

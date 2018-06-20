@@ -26,16 +26,15 @@ class Viewer:
         print('start')
         self.__root.mainloop()
 
-    def call(self, delay, action, *args):
-        print('call', args)
-        self.__root.after(delay, action, args)
+    def call(self, delay, action, arg=None):
+        print('call')
+        self.__root.after(delay, action, arg)
 
     def update(self, text):
         self.__display.configure(state=tk.NORMAL)
         self.__display.delete(1.0, 'end')
         self.__display.insert(0.0, text)
         self.__display.configure(state=tk.DISABLED)
-        print('update display')
         self.__root.update_idletasks()
 
     def set_alert(self, text):
@@ -50,7 +49,6 @@ class Viewer:
         return "Help Mari escape the maze!\nUse the WASD or the arrow keys to move Mari"
 
     def __handle_key_press(self, event):
-        print(event.keysym)
         if event.keysym != 'Escape':
             if self.__on_user_input:
                 self.__on_user_input(event.keysym)
@@ -58,6 +56,7 @@ class Viewer:
             else:
                 print(event.keysym)
         else:
+            print('Quitting...')
             self.__root.quit()
 
 

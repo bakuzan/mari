@@ -24,9 +24,10 @@ class Maze:
 
         self.__window = Viewer(self.take_turn)
         self.__factory = MazeGenerator(w, h, window=self.__window)
-        self.__window.call(1000, self.__factory.generate, True)
+        self.layout = self.__factory.generate(True)
         self.__window.start()
-        self.layout = self.__factory.grid()
+        self.render()
+        print('layout', self.layout)
 
     def is_ready(self):
         if not self.layout:
@@ -53,12 +54,17 @@ class Maze:
 
         self.__window.update("".join(display))
         self.__window.set_alert(self.message)
+        self.game_is_playable()
         # print("".join(display), flush=True)
         # print(self.message, end='\r')
 
     def take_turn(self, key):
+        if not self.is_ready() or not self.game_is_playable():
+            return
+
         key = str(key).lower()
         direction = constants.key_press.get(key)
+        print("player turn > ", direction)
         if direction and self.is_ready():
             self.message = self.player.move(direction)
             self.render()
