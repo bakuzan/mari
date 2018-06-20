@@ -55,11 +55,13 @@ class Maze:
                 current_point = Point(col_i, row_i)
                 if current_point == player_location:
                     display.append(self.player.render())
-                elif current_point in [t.get_location() for t in self.trolls] and col != constants.maze_point_wall:
-                    trolls = [
-                        t for t in self.trolls if current_point == t.get_location()]
+                elif current_point in [t.get_location() for t in self.trolls]:
+                    trolls = [t for t in self.trolls if current_point == t.get_location()]
                     troll = trolls[0]
-                    display.append(troll.render())
+                    if col != constants.maze_point_wall:
+                        display.append(troll.render())
+                    else:
+                        self.trolls = [t for t in self.trolls if t.id != troll.id]
                 else:
                     display.append(col)
             display.append('\n')
