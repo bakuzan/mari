@@ -1,4 +1,5 @@
 import random
+from threading import Thread
 from time import sleep
 
 from maze import constants
@@ -13,7 +14,7 @@ from viewer.viewer import Viewer
 class Maze:
     """
     Holds all the information about the current maze
-    Provides method to interact with the game.
+    Provides method to interact with the game. 
     """
 
     def __init__(self, w, h, troll_count=3):
@@ -22,20 +23,33 @@ class Maze:
         self.trolls = []
         self.message = ""
 
-        self.__window = Viewer(self.take_turn)
+        self.__window = Viewer(on_play=self.start_game,
+                               on_user_input=self.take_turn)
         self.__factory = MazeGenerator(w, h, window=self.__window)
-        self.layout = self.__factory.generate(True)
+
+        t = Thread(target=self.__factory.generate, args=(True,))
+        t.daemon = True
+        t.start()
+
         self.__window.start()
-        self.render()
-        print('layout', self.layout)
 
     def is_ready(self):
         if not self.layout:
             return False
         return True
 
-    def render(self):
+    def start_game(self):
+        self.layout = self.__factory.grid()
         self._place_entities()
+        print('layout', self.layout)
+        self.render()
+
+        t = Thread(target=self._start_trolls)
+        t.daemon = True
+        t.start()
+
+    def render(self):
+        print('render me')
         player_location = self.player.get_location()
         display = []
         for row_i, row in enumerate(self.layout):
@@ -121,7 +135,6 @@ class Maze:
             self.player = Mari(self, self._get_random_point(True))
             self.trolls = [Troll(i, self.layout, self._get_random_point())
                            for i in range(0, 3)]
-            self._start_trolls()
 
     def _get_random_point(self, is_player=False):
         height = len(self.layout)
@@ -153,4 +166,6 @@ class Maze:
         self._start_trolls()
 
     def _start_trolls(self):
-        self.__window.call(2000, self._perform_trolls_turn)
+        sleep(1)
+        if self.trolls and len(self.trolls) > 0:
+            self._perform_trolls_turn()

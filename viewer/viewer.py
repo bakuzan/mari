@@ -2,7 +2,10 @@ import tkinter as tk
 
 
 class Viewer:
-    def __init__(self, on_user_input=None):
+    def __init__(self, **kwargs):
+        on_play, on_user_input = kwargs.pop(
+            'on_play', None), kwargs.pop('on_user_input', None)
+
         self.__on_user_input = on_user_input
         self.__root = tk.Tk()
         self.__root.title('Maze escape')
@@ -15,6 +18,9 @@ class Viewer:
 
         self.__info = tk.Label(self.__container, text=self._get_info())
         self.__info.pack()
+
+        self.__play = tk.Button(self.__container, text="Play", command=on_play)
+        self.__play.pack()
 
         self.__display = tk.Text(self.__container, state=tk.DISABLED)
         self.__display.pack()

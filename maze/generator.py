@@ -1,4 +1,3 @@
-import functools
 from random import randrange, sample, shuffle
 from time import sleep
 from maze import constants
@@ -27,6 +26,7 @@ class MazeGenerator:
         """
         create a maze layout
         """
+
         print("gen", animate)
         g = [[self.WALL for c in range(self.wMax)] for r in range(self.hMax)]
         grid = g
@@ -68,6 +68,7 @@ class MazeGenerator:
                     grid[y][x] = constants.maze_point_wall
                 else:
                     grid[y][x] = sq
+
         self.__grid = grid
         return grid
 
