@@ -41,7 +41,6 @@ class Maze:
     def start_game(self):
         self.layout = self.__factory.grid()
         self._place_entities()
-        print('layout', self.layout)
         self.render()
 
         t = Thread(target=self._start_trolls)
@@ -49,7 +48,6 @@ class Maze:
         t.start()
 
     def render(self):
-        print('render me')
         player_location = self.player.get_location()
         display = []
         for row_i, row in enumerate(self.layout):
@@ -57,7 +55,7 @@ class Maze:
                 current_point = Point(col_i, row_i)
                 if current_point == player_location:
                     display.append(self.player.render())
-                elif current_point in [t.get_location() for t in self.trolls]:
+                elif current_point in [t.get_location() for t in self.trolls] and col != constants.maze_point_wall:
                     trolls = [
                         t for t in self.trolls if current_point == t.get_location()]
                     troll = trolls[0]
@@ -69,8 +67,6 @@ class Maze:
         self.__window.update("".join(display))
         self.__window.set_alert(self.message)
         self.game_is_playable()
-        # print("".join(display), flush=True)
-        # print(self.message, end='\r')
 
     def take_turn(self, key):
         if not self.is_ready() or not self.game_is_playable():
@@ -78,7 +74,6 @@ class Maze:
 
         key = str(key).lower()
         direction = constants.key_press.get(key)
-        print("player turn > ", direction)
         if direction and self.is_ready():
             self.message = self.player.move(direction)
             self.render()
@@ -167,5 +162,5 @@ class Maze:
 
     def _start_trolls(self):
         sleep(1)
-        if self.trolls and len(self.trolls) > 0:
+        if self.trolls and len(self.trolls) > 0 and self.game_is_playable():
             self._perform_trolls_turn()

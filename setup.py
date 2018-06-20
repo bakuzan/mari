@@ -13,7 +13,7 @@ def check_if_quit(key):
 
 if __name__ == "__main__":
     os.system('cls')
-    maze = Maze(9, 9)
+    maze = Maze(15, 9)
     # while not maze.is_ready():
     #     sleep(0.5)
 
