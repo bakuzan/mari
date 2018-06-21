@@ -21,9 +21,14 @@ class Maze:
         self.__w = w
         self.__h = h
 
-        self.__window = Viewer(on_play=self.start_game,
-                               on_user_input=self.take_turn, on_reset=self.reset_maze)
-        self.__factory = MazeGenerator(self.__w, self.__h, window=self.__window)
+        self.__window = Viewer(
+            on_play=self.start_game,
+            on_user_input=self.take_turn,
+            on_reset=self.reset_maze)
+        self.__factory = MazeGenerator(
+            self.__w,
+            self.__h,
+            window=self.__window)
 
         self.reset_maze()
         self.__window.start()
@@ -47,7 +52,7 @@ class Maze:
         self.player = None
         self.trolls = []
         self.message = ""
-        
+
         t = Thread(target=self.__factory.generate, args=(True,))
         t.daemon = True
         t.start()
@@ -61,12 +66,14 @@ class Maze:
                 if current_point == player_location:
                     display.append(self.player.render())
                 elif current_point in [t.get_location() for t in self.trolls]:
-                    trolls = [t for t in self.trolls if current_point == t.get_location()]
+                    trolls = [
+                        t for t in self.trolls if current_point == t.get_location()]
                     troll = trolls[0]
                     if col != constants.maze_point_wall:
                         display.append(troll.render())
                     else:
-                        self.trolls = [t for t in self.trolls if t.id != troll.id]
+                        self.trolls = [
+                            t for t in self.trolls if t.id != troll.id]
                 else:
                     display.append(col)
             display.append('\n')
@@ -131,7 +138,7 @@ class Maze:
             self.__window.set_alert("Mari is trapped!\nYou lose!")
         else:
             self.__window.set_alert("Game ended.")
-        
+
         self.__window.enable_new_game()
 
     def _place_entities(self):
@@ -170,6 +177,6 @@ class Maze:
         self._start_trolls()
 
     def _start_trolls(self):
-        sleep(0.66)
+        sleep(0.55)
         if self.trolls and len(self.trolls) > 0 and self.game_is_playable():
             self._perform_trolls_turn()

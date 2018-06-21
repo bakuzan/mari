@@ -51,6 +51,7 @@ class MazeGenerator:
 
             if animate:
                 self._render(grid)
+                sleep(0.05)
 
         grid = self._cut_exit(grid)
         if animate:
@@ -109,7 +110,6 @@ class MazeGenerator:
                 exit_point = (c_x, c_y)
 
         e_x, e_y = exit_point
-        print('exit point @ {0}, {1}'.format(e_x, e_y))
         grid[e_y][e_x] = self.EXIT
         return grid
 
