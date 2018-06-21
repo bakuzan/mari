@@ -101,12 +101,15 @@ class MazeGenerator:
             exit_options = self._generate_exit_options(exit_options)
             shuffle(exit_options)
             c_x, c_y, (t_x, t_y) = exit_options.pop()
+            d_x = c_x + t_x
+            d_y = c_y + t_y
 
             # if this neighbour is empty, this is a valid exit
-            if grid[c_x + t_x][c_y + t_y] == self.PASSAGE:
+            if grid[d_y][d_x] == self.PASSAGE:
                 exit_point = (c_x, c_y)
 
         e_x, e_y = exit_point
+        print('exit point @ {0}, {1}'.format(e_x, e_y))
         grid[e_y][e_x] = self.EXIT
         return grid
 
@@ -119,8 +122,8 @@ class MazeGenerator:
         else:
             top_wall = (randrange(1, self.wMax, 2), 0, (0, 1))
             left_wall = (0, randrange(1, self.hMax, 2), (1, 0))
-            bottom_wall = (randrange(1, self.wMax, 2), self.hMax, (0, -1))
-            right_wall = (self.wMax, randrange(1, self.hMax, 2), (-1, 0))
+            bottom_wall = (randrange(1, self.wMax, 2), self.hMax - 1, (0, -1))
+            right_wall = (self.wMax - 1, randrange(1, self.hMax, 2), (-1, 0))
             return [top_wall, left_wall, right_wall, bottom_wall]
 
     def _render(self, grid):

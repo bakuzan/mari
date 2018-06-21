@@ -11,7 +11,7 @@ class Viewer:
         self.__on_reset = on_reset
 
         self.__root = tk.Tk()
-        self.__root.title('Maze escape')
+        self.__root.title('Mari - Maze escape')
         self.__root.bind('<KeyPress>', self.__handle_key_press)
 
         self.__message = tk.StringVar()
