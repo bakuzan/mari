@@ -17,22 +17,27 @@ class Viewer:
         self.__message = tk.StringVar()
 
         self.__container = tk.Frame(self.__root)
-        self.__container.pack()
+        self.__container.grid()
 
         self.__info = tk.Label(self.__container, text=self._get_info())
-        self.__info.pack()
+        self.__info.grid()
 
-        self.__play = tk.Button(self.__container, text="Play", command=self.play_game)
-        self.__play.pack()
+        self.__button_frame = tk.Frame(self.__container)
+        self.__button_frame.grid(row=2, column=0, columnspan=4)
 
-        self.__reset = tk.Button(self.__container, text="Reset", command=self.reset_game, state=tk.DISABLED)
-        self.__reset.pack()
+        self.__play = tk.Button(self.__button_frame,
+                                text="Play", width=25, command=self.play_game)
+        self.__play.grid(row=0, column=1)
+
+        self.__reset = tk.Button(self.__button_frame, text="Reset",
+                                 width=25, command=self.reset_game, state=tk.DISABLED)
+        self.__reset.grid(row=0, column=2)
 
         self.__display = tk.Text(self.__container, state=tk.DISABLED)
-        self.__display.pack()
+        self.__display.grid()
 
         self.__alert = tk.Label(self.__container, textvariable=self.__message)
-        self.__alert.pack()
+        self.__alert.grid()
 
     def start(self):
         print('start')
