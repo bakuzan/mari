@@ -20,6 +20,7 @@ class Maze:
     def __init__(self, w, h, troll_count=3):
         self.__w = w
         self.__h = h
+        self.__troll_count = troll_count
 
         self.__window = Viewer(
             on_play=self.start_game,
@@ -145,7 +146,7 @@ class Maze:
         if not self.player:
             self.player = Mari(self, self._get_random_point(True))
             self.trolls = [Troll(i, self.layout, self._get_random_point())
-                           for i in range(0, 3)]
+                           for i in range(0, self.__troll_count)]
 
     def _get_random_point(self, is_player=False):
         height = len(self.layout)
