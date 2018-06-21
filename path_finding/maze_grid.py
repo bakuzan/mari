@@ -14,7 +14,7 @@ direction_list = [point for name, point in list(
 
 
 def load_maze():
-    with open("./layouts/narrow.txt", "r") as layout:
+    with open("./assets/narrow.txt", "r") as layout:
         return layout.readlines()
 
 

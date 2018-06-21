@@ -9,7 +9,7 @@ from path_finding.a_star_search import a_star_search
 
 
 def load_maze():
-    with open("./layouts/narrow.txt", "r") as layout:
+    with open("./assets/narrow.txt", "r") as layout:
         return layout.readlines()
 
 

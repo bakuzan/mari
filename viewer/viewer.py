@@ -1,4 +1,9 @@
+import os
 import tkinter as tk
+
+__dirname = os.path.dirname(__file__)
+window_icon = os.path.join(__dirname, '../assets/icon.ico')
+print(__dirname, window_icon)
 
 
 class Viewer:
@@ -11,6 +16,7 @@ class Viewer:
         self.__on_reset = on_reset
 
         self.__root = tk.Tk()
+        self.__root.iconbitmap(default=window_icon)
         self.__root.title('Mari - Maze escape')
         self.__root.bind('<KeyPress>', self.__handle_key_press)
 
