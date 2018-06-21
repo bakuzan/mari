@@ -54,6 +54,7 @@ class Viewer:
         self.__on_reset()
         self.__reset.configure(state=tk.DISABLED)
         self.__play.configure(state=tk.NORMAL)
+        self.set_alert("")
 
     def call(self, delay, action, arg=None):
         print('call')
