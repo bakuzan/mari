@@ -81,7 +81,6 @@ class Renderer:
     """
 
     def _is_within_line_of_sight(self, current):
-        print(current, self.__player_location)
         px, py = self.__player_location
         cx, cy = current
         return abs(cx-px) <= SIGHT_RANGE and abs(cy-py) <= SIGHT_RANGE
