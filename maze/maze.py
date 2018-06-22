@@ -7,6 +7,7 @@ from maze.point import Point
 from maze.character.mari import Mari
 from maze.character.troll import Troll
 from maze.generator import MazeGenerator
+from maze.utf_render import render_square
 from path_finding import a_star_search
 from viewer.viewer import Viewer
 
@@ -73,10 +74,13 @@ class Maze:
                     if col != constants.maze_point_wall:
                         display.append(troll.render())
                     else:
+                        display.append(
+                            render_square(self.layout, current_point, col))
                         self.trolls = [
                             t for t in self.trolls if t.id != troll.id]
                 else:
-                    display.append(col)
+                    display.append(
+                        render_square(self.layout, current_point, col))
             display.append('\n')
 
         self.__window.update("".join(display))

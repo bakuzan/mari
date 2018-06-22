@@ -1,5 +1,10 @@
 from .point import Point
 
+UP = 'up'
+LEFT = 'left'
+RIGHT = 'right'
+DOWN = 'down'
+
 translations = {
     'up': Point(0, -1),
     'left': Point(-1, 0),
