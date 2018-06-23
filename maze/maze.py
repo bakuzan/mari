@@ -7,6 +7,7 @@ from maze.point import Point
 from maze.character.mari import Mari
 from maze.character.troll import Troll
 from maze.generator import MazeGenerator
+from maze.renderer import Renderer
 from path_finding import a_star_search
 from viewer.viewer import Viewer
 
@@ -60,10 +61,13 @@ class Maze:
 
     def render(self):
         player_location = self.player.get_location()
+        render_factory = Renderer(self.layout, player_location)
         display = []
+
         for row_i, row in enumerate(self.layout):
             for col_i, col in enumerate(row):
                 current_point = Point(col_i, row_i)
+
                 if current_point == player_location:
                     display.append(self.player.render())
                 elif current_point in [t.get_location() for t in self.trolls]:
@@ -71,12 +75,16 @@ class Maze:
                         t for t in self.trolls if current_point == t.get_location()]
                     troll = trolls[0]
                     if col != constants.maze_point_wall:
-                        display.append(troll.render())
+                        display.append(
+                            render_factory.render_square(current_point, troll.render()))
                     else:
+                        display.append(
+                            render_factory.render_square(current_point, col))
                         self.trolls = [
                             t for t in self.trolls if t.id != troll.id]
                 else:
-                    display.append(col)
+                    display.append(
+                        render_factory.render_square(current_point, col))
             display.append('\n')
 
         self.__window.update("".join(display))

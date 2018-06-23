@@ -81,8 +81,8 @@ class Viewer:
         self.__display.insert(0.0, text)
 
         for i, s in enumerate(text):
-            start, end = float(i), float(i+1)
-            if not s in [' ', '#', '\n']:
+            if s in ['T', '>', 'v', '^', '<', 'X']:
+                start, end = float(i), float(i+1)
                 self.__display.tag_add(BOLD_TAG, start, end)
                 if s in ['T', '>', 'v', '^', '<']:
                     entity_type = TROLL_TAG if s == 'T' else PLAYER_TAG
