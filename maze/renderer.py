@@ -1,7 +1,7 @@
+import math
 from maze.constants import translations, maze_point_wall, UP, LEFT, DOWN, RIGHT
 
 ALL_DIRECTIONS = 4
-SIGHT_RANGE = 5
 
 DARK_SHADE = u'\u2593'
 BOX_SQUARE = u'\u25A1'
@@ -33,6 +33,8 @@ class Renderer:
 
     def __init__(self, maze, player_location):
         self.__maze = maze
+        self.__h_sight_range = math.floor(len(maze) / 5)
+        self.__w_sight_range = math.floor(len(maze[0]) / 5)
         self.__player_location = player_location
 
     def render_square(self, current, sq):
@@ -83,7 +85,7 @@ class Renderer:
     def _is_within_line_of_sight(self, current):
         px, py = self.__player_location
         cx, cy = current
-        return abs(cx-px) <= SIGHT_RANGE and abs(cy-py) <= SIGHT_RANGE
+        return abs(cx-px) <= self.__w_sight_range and abs(cy-py) <= self.__h_sight_range
 
     def _get_neighbouring_wall_directions(self, current):
         neighbour_directions = set()
