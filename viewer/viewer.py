@@ -13,6 +13,7 @@ EXIT_TAG = 'EXIT'
 
 class Viewer:
     def __init__(self, **kwargs):
+        (dw, dh) = kwargs.pop('dimensions', (0, 0))
         on_play, on_user_input, on_reset = kwargs.pop(
             'on_play', None), kwargs.pop('on_user_input', None), kwargs.pop('on_reset', None)
 
@@ -21,6 +22,7 @@ class Viewer:
         self.__on_reset = on_reset
 
         self.__root = tk.Tk()
+        # self.__root.geometry("600x600")
         self.__root.iconbitmap(default=window_icon)
         self.__root.title('Mari - Maze escape')
         self.__root.bind('<KeyPress>', self.__handle_key_press)
@@ -28,7 +30,7 @@ class Viewer:
         self.__message = tk.StringVar()
 
         self.__container = tk.Frame(self.__root)
-        self.__container.grid()
+        self.__container.grid(ipadx=5, ipady=5)
 
         self.__info = tk.Label(self.__container, text=self._get_info())
         self.__info.grid()
@@ -44,8 +46,11 @@ class Viewer:
                                  width=25, command=self.reset_game, state=tk.DISABLED)
         self.__reset.grid(row=0, column=2)
 
-        self.__display = tk.Text(self.__container, state=tk.DISABLED)
-        self.__display.grid()
+        display_width = (2 * dw) + 1
+        display_height = (2 * dh) + 1
+        self.__display = tk.Text(
+            self.__container, state=tk.DISABLED, width=display_width, height=display_height)
+        self.__display.grid(padx=5, pady=5)
         self.__display.tag_configure(BOLD_TAG, font=Font(weight='bold'))
         self.__display.tag_configure(PLAYER_TAG, background='green')
         self.__display.tag_configure(TROLL_TAG, background='red')
