@@ -24,7 +24,7 @@ class Maze:
         self.__troll_count = troll_count
 
         self.__window = Viewer(
-            dimensions=(w,h),
+            dimensions=(w, h),
             on_play=self.start_game,
             on_user_input=self.take_turn,
             on_reset=self.reset_maze)
@@ -62,7 +62,9 @@ class Maze:
 
     def render(self):
         player_location = self.player.get_location()
-        render_factory = Renderer(self.layout, player_location)
+        in_progress = self.game_is_playable()
+        render_factory = Renderer(self.layout, player_location, in_progress)
+
         display = []
 
         for row_i, row in enumerate(self.layout):

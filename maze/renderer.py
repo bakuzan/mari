@@ -31,14 +31,15 @@ class Renderer:
     Class that works out what to render in a given square
     """
 
-    def __init__(self, maze, player_location):
+    def __init__(self, maze, player_location, fog_of_war):
+        self.__fog_of_war = fog_of_war
         self.__maze = maze
         self.__h_sight_range = math.floor(len(maze) / 5)
         self.__w_sight_range = math.floor(len(maze[0]) / 5)
         self.__player_location = player_location
 
     def render_square(self, current, sq):
-        if not self._is_within_line_of_sight(current):
+        if self.__fog_of_war and not self._is_within_line_of_sight(current):
             return DARK_SHADE
 
         if sq != maze_point_wall:
