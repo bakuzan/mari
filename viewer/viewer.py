@@ -22,7 +22,6 @@ class Viewer:
         self.__on_reset = on_reset
 
         self.__root = tk.Tk()
-        # self.__root.geometry("600x600")
         self.__root.iconbitmap(default=window_icon)
         self.__root.title('Mari - Maze escape')
         self.__root.bind('<KeyPress>', self.__handle_key_press)
@@ -39,7 +38,7 @@ class Viewer:
         self.__button_frame.grid(row=2, column=0, columnspan=4)
 
         self.__play = tk.Button(self.__button_frame,
-                                text="Play", width=25, command=self.play_game)
+                                text="Play", width=25, command=self.play_game, state=tk.DISABLED)
         self.__play.grid(row=0, column=1)
 
         self.__reset = tk.Button(self.__button_frame, text="Reset",
@@ -63,6 +62,9 @@ class Viewer:
         print('start')
         self.__root.mainloop()
 
+    def enable_game(self):
+        self.__play.configure(state=tk.NORMAL)
+
     def play_game(self):
         self.__on_play()
         self.__play.configure(state=tk.DISABLED)
@@ -73,7 +75,6 @@ class Viewer:
     def reset_game(self):
         self.__on_reset()
         self.__reset.configure(state=tk.DISABLED)
-        self.__play.configure(state=tk.NORMAL)
         self.set_alert("")
 
     def call(self, delay, action, arg=None):

@@ -67,6 +67,7 @@ class MazeGenerator:
                 else:
                     grid[y][x] = sq
 
+        self.__window.enable_game()
         self.__grid = grid
         return grid
 
