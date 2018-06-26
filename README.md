@@ -4,7 +4,11 @@ Help Mari escape the trolls!
 
 # What?
 
-Mari is a command line maze mini-game.
+Mari is a maze mini-game. 
+
+The goal is to guide Mari through the maze to the goal(X) while avoiding the trolls(T).
+
+Mari can push walls to make new passage ways or - if she finds the hammer(h) - can destroy walls completely.
 
 # Why ?
 
