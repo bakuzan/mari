@@ -1,3 +1,4 @@
+from time import sleep
 from maze import constants
 from maze.point import Point
 from maze.character.character import Character
@@ -16,6 +17,7 @@ class Mari(Character):
         super().__init__('mari', maze.layout, starting_point)
         self.game = maze
         self.__inventory = set()
+        self.__busy = False
 
     def render(self):
         return constants.character[self.facing]
@@ -23,6 +25,8 @@ class Mari(Character):
     def move(self, direction):
         did_action = super().move(direction)
         if did_action:
+            if self.location == self.game.hammer.get_location():
+                self._pick_up(self.game.hammer)
             return ""
         else:
             return "Mari can't do that!"
@@ -40,18 +44,20 @@ class Mari(Character):
         return self.location in [troll.get_location() for troll in self.game.trolls]
 
     def do(self, action):
-        if self.has_item(action) and self._can_destroy_wall():
+        if self._has_item(action) and self._can_destroy_wall():
+            viewer = self.game.get_viewer()
+            viewer.set_alert("Hammering...")
             self._perform_destroy_wall()
             return ""
         else:
             return "Mari can't do that!"
 
-    def has_item(self, key):
-        return key in self.__inventory
-
     """
     internals
     """
+
+    def _has_item(self, key):
+        return key in self.__inventory
 
     def _can_push(self, translation):
         x, y = translation
@@ -74,15 +80,25 @@ class Mari(Character):
         self.location = Point(x, y)
         self.maze = maze
 
-        if self.location == self.game.hammer.get_location():
-            self._pick_up(self.game.hammer)
-
     def _pick_up(self, item):
         item.pick_up()
         self.__inventory.add(item.id)
+        viewer = self.game.get_viewer()
+        viewer.set_alert("Picked up {}".format(item.id))
+        sleep(1)
+        viewer.set_alert("")
 
     def _can_destroy_wall(self):
-        pass
+        lx, ly = self.location
+        tx, ty = constants.translations[self.facing]
+        x, y = Point(lx + tx, ly + ty)
+        return y != 0 and y != len(self.maze) - 1 and x != 0 and x != len(self.maze[0]) - 1
 
     def _perform_destroy_wall(self):
-        pass
+        sleep(1)
+        maze = self.maze[:]
+        lx, ly = self.location
+        tx, ty = constants.translations[self.facing]
+        x, y = Point(lx + tx, ly + ty)
+        maze[y][x] = constants.maze_point_empty
+        self.maze = maze

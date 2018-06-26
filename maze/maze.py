@@ -62,6 +62,9 @@ class Maze:
         t.daemon = True
         t.start()
 
+    def get_viewer(self):
+        return self.__window
+
     def render(self):
         player_location = self.player.get_location()
         hammer_location = self.hammer.get_location()
