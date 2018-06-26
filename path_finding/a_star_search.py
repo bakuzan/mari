@@ -50,3 +50,9 @@ def perform_search(layout, start, target):
     graph = MazeGridWeighted(layout, target)
     _, path = a_star_search(graph, start, target)
     return path
+
+
+def can_find_path(layout, start, target):
+    graph = MazeGridWeighted(layout, target)
+    _, path = a_star_search(graph, start, target)
+    return path

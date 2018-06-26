@@ -11,7 +11,8 @@ class Character:
     translations = constants.translations.copy()
 
     valid_move_targets = [
-        constants.maze_point_empty
+        constants.maze_point_empty,
+        constants.hammer
     ]
 
     def __init__(self, id, maze, starting_point):
@@ -25,6 +26,9 @@ class Character:
 
     def get_location(self):
         return self.location
+
+    def get_facing(self):
+        return self.facing
 
     def move(self, direction):
         if not self._is_facing(direction):

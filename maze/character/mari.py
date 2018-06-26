@@ -15,6 +15,7 @@ class Mari(Character):
     def __init__(self, maze, starting_point):
         super().__init__('mari', maze.layout, starting_point)
         self.game = maze
+        self.__inventory = set()
 
     def render(self):
         return constants.character[self.facing]
@@ -37,6 +38,16 @@ class Mari(Character):
 
     def is_caught(self):
         return self.location in [troll.get_location() for troll in self.game.trolls]
+
+    def do(self, action):
+        if self.has_item(action) and self._can_destroy_wall():
+            self._perform_destroy_wall()
+            return ""
+        else:
+            return "Mari can't do that!"
+
+    def has_item(self, key):
+        return key in self.__inventory
 
     """
     internals
@@ -62,3 +73,16 @@ class Mari(Character):
         maze[uy][ux], maze[y][x] = maze[y][x], maze[uy][ux]
         self.location = Point(x, y)
         self.maze = maze
+
+        if self.location == self.game.hammer.get_location():
+            self._pick_up(self.game.hammer)
+
+    def _pick_up(self, item):
+        item.pick_up()
+        self.__inventory.add(item.id)
+
+    def _can_destroy_wall(self):
+        pass
+
+    def _perform_destroy_wall(self):
+        pass

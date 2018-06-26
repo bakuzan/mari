@@ -12,6 +12,7 @@ translations = {
     'right': Point(1, 0)
 }
 
+hammer = 'h'
 troll = 'T'
 character = {
     'up': '^',
@@ -42,7 +43,10 @@ key_press = {
     'up': 'up',
     'left': 'left',
     'down': 'down',
-    'right': 'right',
+    'right': 'right'
+}
+key_press_action = {
+    'h': 'sledgehammer'
 }
 
 maze_point_empty = ' '
