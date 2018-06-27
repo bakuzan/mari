@@ -16,7 +16,7 @@ from viewer.viewer import Viewer
 class Maze:
     """
     Holds all the information about the current maze
-    Provides method to interact with the game.  
+    Provides method to interact with the game. 
     """
 
     def __init__(self, w, h, troll_count=3):
@@ -47,8 +47,7 @@ class Maze:
         self._place_entities()
         self.render()
 
-        t = Thread(target=self._start_trolls)
-        t.daemon = True
+        t = Thread(target=self._start_trolls, daemon=True)
         t.start()
 
     def reset_maze(self):
@@ -58,8 +57,7 @@ class Maze:
         self.hammer = None
         self.message = ""
 
-        t = Thread(target=self.__factory.generate, args=(True,))
-        t.daemon = True
+        t = Thread(target=self.__factory.generate, args=(True,), daemon=True)
         t.start()
 
     def get_viewer(self):
@@ -109,14 +107,14 @@ class Maze:
         key = str(key).lower()
         direction = constants.key_press.get(key)
         action = constants.key_press_action.get(key)
-        if self.is_ready():
+        if self.is_ready() and not self.player.is_busy():
             if direction:
-                self.message = self.player.move(
-                    self.layout, direction, hammer=self.hammer, send_message=self.__window.set_alert)
+                self.player.move(
+                    self.layout, direction, hammer=self.hammer, send_message=self._update_window_message)
                 self.render()
             elif action:
-                self.message = self.player.do(
-                    self.layout, action, send_message=self.__window.set_alert)
+                self.player.do(
+                    self.layout, action, send_message=self._update_window_message)
                 self.render()
 
     def is_escaped(self):
@@ -138,7 +136,7 @@ class Maze:
             # TODO
             # detect if a you can actually move blocks to escape
             if not self.message:
-                self.message = "You are blocked from the exit, try pushing walls!"
+                self.message = "You are blocked from the exit.\nTry pushing walls or find the hammer!"
 
             return True
 
@@ -169,6 +167,10 @@ class Maze:
             self.__window.set_alert("Game ended.")
 
         self.__window.enable_new_game()
+
+    def _update_window_message(self, message):
+        self.message = message
+        self.__window.set_alert(self.message)
 
     def _place_entities(self):
         if not self.player:

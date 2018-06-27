@@ -90,15 +90,15 @@ class Viewer:
         self.__display.delete(0.0, 'end')
         self.__display.insert(0.0, text)
 
-        for i, s in enumerate(text):
-            if s in ['T', '>', 'v', '^', '<', 'X']:
-                start, end = float(i), float(i+1)
-                self.__display.tag_add(BOLD_TAG, start, end)
-                if s in ['T', '>', 'v', '^', '<']:
-                    entity_type = TROLL_TAG if s == 'T' else PLAYER_TAG
-                    self.__display.tag_add(entity_type, start, end)
-                else:
-                    self.__display.tag_add(EXIT_TAG, start, end)
+        # for i, s in enumerate(text):
+        #     if s in ['T', '>', 'v', '^', '<', 'X']:
+        #         start, end = float(i), float(i+1)
+        #         self.__display.tag_add(BOLD_TAG, start, end)
+        #         if s in ['T', '>', 'v', '^', '<']:
+        #             entity_type = TROLL_TAG if s == 'T' else PLAYER_TAG
+        #             self.__display.tag_add(entity_type, start, end)
+        #         else:
+        #             self.__display.tag_add(EXIT_TAG, start, end)
 
         self.__display.configure(state=tk.DISABLED)
         self.__root.update_idletasks()

@@ -1,3 +1,4 @@
+from threading import Thread
 from time import sleep
 from maze import constants
 from maze.point import Point
@@ -22,15 +23,19 @@ class Mari(Character):
         return constants.character[self.get_facing()]
 
     def move(self, maze, direction, **kwargs):
+        send_message = kwargs.pop('send_message')
         did_action = super().move(maze, direction)
+
         if did_action:
             hammer = kwargs.pop('hammer')
-            send_message = kwargs.pop('send_message')
-            if self.get_location() == hammer.get_location():
-                self._pick_up(hammer, send_message=send_message)
-            return ""
+            if not self.get_location() == hammer.get_location():
+                send_message("")
+            else:
+                t = Thread(target=self._pick_up, args=(hammer,), kwargs={
+                           'send_message': send_message}, daemon=True)
+                t.start()
         else:
-            return "Mari can't do that!"
+            send_message("Mari can't do that!")
 
     def can_move(self, maze, target_point):
         c_x, c_y = self.get_location()
@@ -44,14 +49,18 @@ class Mari(Character):
     def is_caught(self, trolls):
         return self.get_location() in [troll.get_location() for troll in trolls]
 
+    def is_busy(self):
+        return self.__busy
+
     def do(self, maze, action, **kwargs):
+        send_message = kwargs.pop('send_message')
         if self._has_item(action) and self._can_destroy_wall(maze):
-            send_message = kwargs.pop('send_message')
-            send_message("Hammering...")
-            self._perform_destroy_wall(maze)
-            return ""
+            t = Thread(target=self._perform_destroy_wall,
+                       args=(maze,), kwargs={'send_message': send_message}, daemon=True)
+            t.start()
+
         else:
-            return "Mari can't do that!"
+            send_message("Mari can't do that!")
 
     """
     internals
@@ -85,7 +94,7 @@ class Mari(Character):
         item.pick_up()
         self.__inventory.add(item.id)
         send_message("Picked up {}".format(item.id))
-        sleep(1)
+        sleep(2)
         send_message("")
 
     def _can_destroy_wall(self, maze):
@@ -94,9 +103,14 @@ class Mari(Character):
         x, y = Point(lx + tx, ly + ty)
         return y != 0 and y != len(maze) - 1 and x != 0 and x != len(maze[0]) - 1
 
-    def _perform_destroy_wall(self, maze):
+    def _perform_destroy_wall(self, maze, **kwargs):
+        send_message = kwargs.pop('send_message')
+        send_message("Hammering...")
+        self.__busy = True
         sleep(1)
         lx, ly = self.get_location()
         tx, ty = self.translations[self.get_facing()]
         x, y = Point(lx + tx, ly + ty)
         maze[y][x] = constants.maze_point_empty
+        self.__busy = False
+        send_message("")

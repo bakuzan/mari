@@ -20,6 +20,7 @@ class Hammer:
 
     def pick_up(self):
         self.__is_carried = True
+        self.__location = None
 
     def is_carried(self):
         return self.__is_carried
