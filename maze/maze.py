@@ -71,29 +71,30 @@ class Maze:
         render_factory = Renderer(self.layout, player_location, in_progress)
 
         for row_i, row in enumerate(self.layout):
-            for col_i, col in enumerate(row):
+            for col_i, tile in enumerate(row):
                 current_point = Point(col_i, row_i)
 
                 if current_point == player_location:
                     display.append(self.player.render())
+
                 elif current_point in [t.get_location() for t in self.trolls]:
                     trolls = [
                         t for t in self.trolls if current_point == t.get_location()]
                     troll = trolls[0]
-                    if col != constants.maze_point_wall:
-                        display.append(
-                            render_factory.render_square(current_point, troll.render()))
+
+                    if tile.get_type() != constants.maze_tile_wall:
+                        display.append(troll.render(render_factory))
                     else:
-                        display.append(
-                            render_factory.render_square(current_point, col))
+                        display.append(tile.render(render_factory, current_point))
                         self.trolls = [
                             t for t in self.trolls if t.id != troll.id]
+
                 elif not self.hammer.is_carried() and current_point == hammer_location:
-                    display.append(
-                        render_factory.render_square(current_point, self.hammer.render()))
+                    display.append(self.hammer.render(render_factory))
+
                 else:
-                    display.append(
-                        render_factory.render_square(current_point, col))
+                    display.append(tile.render(render_factory, current_point))
+
             display.append('\n')
 
         self.__window.update("".join(display))
@@ -120,16 +121,20 @@ class Maze:
     def is_escaped(self):
         if self.player:
             x, y = self.player.get_location()
-            return self.layout[y][x] == constants.maze_point_exit
+            return self.layout[y][x].get_type() == constants.maze_tile_exit
         else:
             return False
 
     def is_solvable(self):
         player_location = self.player.get_location()
-        exit_point = next(Point(row.index(constants.maze_point_exit), y)
-                          for y, row in enumerate(self.layout) if constants.maze_point_exit in row)
+        exit_point = next(
+            Point([c.get_type() for c in row].index(
+                constants.maze_tile_exit), y)
+            for y, row in enumerate(self.layout) if constants.maze_tile_exit in [c.get_type() for c in row])
+
         path = a_star_search.can_find_path(
             self.layout, player_location, exit_point)
+
         if len(path) > 1 and self.player.can_move(self.layout, path[1]):
             return True
         else:
@@ -190,7 +195,8 @@ class Maze:
         return p
 
     def _point_not_acceptable(self, p, is_player):
-        if not self.layout[p.y][p.x] == constants.maze_point_empty or self.layout[p.y][p.x] in [t.get_location() for t in self.trolls]:
+        tile_type = self.layout[p.y][p.x].get_type()
+        if not tile_type == constants.maze_tile_passage or Point(p.y, p.x) in [t.get_location() for t in self.trolls]:
             return True
         elif not is_player and len(a_star_search.perform_search(self.layout, p, self.player.get_location())) < 10:
             return True
@@ -201,7 +207,7 @@ class Maze:
         player_location = self.player.get_location()
         for troll in self.trolls:
             t_x, t_y = troll.get_location()
-            if not self.layout[t_y][t_x] == constants.maze_point_wall:
+            if not self.layout[t_y][t_x].get_type() == constants.maze_tile_wall:
                 troll.move(self.layout, player_location)
             else:
                 self.trolls = [t for t in self.trolls if t.id != troll.id]

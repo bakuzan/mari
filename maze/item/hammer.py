@@ -12,7 +12,10 @@ class Hammer:
         self.__location = starting_point
         self.__is_carried = False
 
-    def render(self):
+    def render(self, factory):
+        return factory.render_entity(self.__location, self)
+
+    def render_value(self):
         return constants.hammer
 
     def get_location(self):

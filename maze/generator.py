@@ -1,15 +1,15 @@
 from random import randrange, sample, shuffle
 from time import sleep
 from maze import constants
+from maze.tile.passage import Passage
+from maze.tile.wall import Wall
+from maze.tile.exit import Exit
 
 
 class MazeGenerator:
     """
     Generator object for maze
     """
-    PASSAGE = 0
-    WALL = 1
-    EXIT = constants.maze_point_exit
 
     def __init__(self, w, h, window=None):
         self.__grid = None
@@ -26,14 +26,14 @@ class MazeGenerator:
         """
         create a maze layout
         """
-        g = [[self.WALL for c in range(self.wMax)] for r in range(self.hMax)]
+        g = [[Wall() for c in range(self.wMax)] for r in range(self.hMax)]
         grid = g
 
         # random starting co-ords from 1 to index, multiples of 2
         c_row = randrange(1, self.hMax, 2)
         c_col = randrange(1, self.wMax, 2)
         stack = [(c_row, c_col)]
-        grid[c_row][c_col] = self.PASSAGE
+        grid[c_row][c_col] = Passage()
 
         while stack:
             (c_row, c_col) = stack[-1]
@@ -45,8 +45,8 @@ class MazeGenerator:
             else:
                 # carve passage in neighbour
                 n_row, n_col = neighbours[0]
-                grid[n_row][n_col] = self.PASSAGE
-                grid[(n_row + c_row) // 2][(n_col + c_col) // 2] = self.PASSAGE
+                grid[n_row][n_col] = Passage()
+                grid[(n_row + c_row) // 2][(n_col + c_col) // 2] = Passage()
                 stack += [(n_row, n_col)]
 
             if animate:
@@ -56,16 +56,6 @@ class MazeGenerator:
         grid = self._cut_exit(grid)
         if animate:
             self._render(grid)
-
-        for y, _ in enumerate(grid):
-            for x, _ in enumerate(grid[y]):
-                sq = grid[y][x]
-                if sq == self.PASSAGE:
-                    grid[y][x] = constants.maze_point_empty
-                elif sq == self.WALL:
-                    grid[y][x] = constants.maze_point_wall
-                else:
-                    grid[y][x] = sq
 
         self.__window.enable_game()
         self.__grid = grid
@@ -81,13 +71,13 @@ class MazeGenerator:
         """
         n_list = []
 
-        if x > 1 and grid[x - 2][y] == self.WALL:
+        if x > 1 and grid[x - 2][y].get_type() == constants.maze_tile_wall:
             n_list.append((x - 2, y))
-        if x < self.hMax - 2 and grid[x + 2][y] == self.WALL:
+        if x < self.hMax - 2 and grid[x + 2][y].get_type() == constants.maze_tile_wall:
             n_list.append((x + 2, y))
-        if y > 1 and grid[x][y - 2] == self.WALL:
+        if y > 1 and grid[x][y - 2].get_type() == constants.maze_tile_wall:
             n_list.append((x, y - 2))
-        if y < self.wMax - 2 and grid[x][y + 2] == self.WALL:
+        if y < self.wMax - 2 and grid[x][y + 2].get_type() == constants.maze_tile_wall:
             n_list.append((x, y + 2))
 
         return sample(n_list, len(n_list))
@@ -107,11 +97,11 @@ class MazeGenerator:
             d_y = c_y + t_y
 
             # if this neighbour is empty, this is a valid exit
-            if grid[d_y][d_x] == self.PASSAGE:
+            if grid[d_y][d_x].get_type() == constants.maze_tile_passage:
                 exit_point = (c_x, c_y)
 
         e_x, e_y = exit_point
-        grid[e_y][e_x] = self.EXIT
+        grid[e_y][e_x] = Exit()
         return grid
 
     def _generate_exit_options(self, options):
@@ -132,12 +122,7 @@ class MazeGenerator:
         for y, _ in enumerate(grid):
             for x, _ in enumerate(grid[y]):
                 sq = grid[y][x]
-                if sq == self.PASSAGE:
-                    display.append(constants.maze_point_empty)
-                elif sq == self.WALL:
-                    display.append(constants.maze_point_wall)
-                else:
-                    display.append(sq)
+                display.append(sq.render_value())
             display.append('\n')
 
         maze = "".join(display)

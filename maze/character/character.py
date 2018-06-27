@@ -11,21 +11,25 @@ class Character:
     translations = constants.translations.copy()
 
     valid_move_targets = [
-        constants.maze_point_empty,
+        constants.maze_tile_passage,
         constants.hammer
     ]
 
-    def __init__(self, id, starting_point):
+    def __init__(self, id, starting_point, render_value=None):
         self.id = id
         self.__facing = 'up'
         self.__location = starting_point
+        self.__render = render_value
+
+    def render_value(self):
+        return self.__render
 
     def render(self):
-        return "@"
+        pass
 
     def get_location(self):
         return self.__location
-    
+
     def set_location(self, location):
         self.__location = location
 
@@ -60,7 +64,7 @@ class Character:
     def _can_move(self, maze, translation):
         target_y = self.__location.y + translation.y
         target_x = self.__location.x + translation.x
-        return maze[target_y][target_x] in self.valid_move_targets
+        return maze[target_y][target_x].get_type() in self.valid_move_targets
 
     def _perform_move(self, maze, translation):
         target_y = self.__location.y + translation.y

@@ -1,5 +1,5 @@
 import math
-from maze.constants import translations, maze_point_wall, UP, LEFT, DOWN, RIGHT
+from maze.constants import translations, maze_tile_wall, UP, LEFT, DOWN, RIGHT
 
 ALL_DIRECTIONS = 4
 
@@ -38,12 +38,17 @@ class Renderer:
         self.__w_sight_range = math.floor(len(maze[0]) / 5)
         self.__player_location = player_location
 
-    def render_square(self, current, sq):
+    def render_entity(self, current, entity):
+        if self.__fog_of_war and not self._is_within_line_of_sight(current):
+            return DARK_SHADE
+        return entity.render_value()
+
+    def render_tile(self, current, tile):
         if self.__fog_of_war and not self._is_within_line_of_sight(current):
             return DARK_SHADE
 
-        if sq != maze_point_wall:
-            return sq
+        if tile.get_type() != maze_tile_wall:
+            return tile.render_value()
 
         directions = self._get_neighbouring_wall_directions(current)
         if len(directions) == ALL_DIRECTIONS:
@@ -98,6 +103,6 @@ class Renderer:
             nx = cx + tx
             ny = cy + ty
             if nx >= 0 and nx <= w and ny >= 0 and ny <= h:
-                if self.__maze[ny][nx] == maze_point_wall:
+                if self.__maze[ny][nx].get_type() == maze_tile_wall:
                     neighbour_directions.add(k)
         return neighbour_directions

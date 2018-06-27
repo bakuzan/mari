@@ -52,3 +52,7 @@ key_press_action = {
 maze_point_empty = ' '
 maze_point_wall = '#'
 maze_point_exit = 'X'
+
+maze_tile_passage = 'passage'
+maze_tile_wall = 'wall'
+maze_tile_exit = 'exit'

@@ -4,10 +4,7 @@ sys.path.append("../maze/")
 from maze import constants
 from maze.point import Point
 
-accessible_points = [c for _, c in list(
-    constants.character.items())] + [
-    constants.maze_point_empty, constants.maze_point_exit, constants.troll
-]
+accessible_points = [constants.maze_tile_passage, constants.maze_tile_exit]
 
 direction_list = [point for name, point in list(
     constants.translations.items())]
@@ -27,7 +24,7 @@ class MazeGrid:
 
     def is_accessible(self, item):
         x, y = item
-        return self.grid[y][x] in accessible_points or item == self.target
+        return self.grid[y][x].get_type() in accessible_points or item == self.target
 
     def is_in_bounds(self, item):
         x, y = item

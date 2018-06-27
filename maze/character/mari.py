@@ -3,7 +3,7 @@ from time import sleep
 from maze import constants
 from maze.point import Point
 from maze.character.character import Character
-
+from maze.tile.passage import Passage
 
 class Mari(Character):
 
@@ -12,7 +12,7 @@ class Mari(Character):
     """
 
     valid_move_targets = Character.valid_move_targets[:] + \
-        [constants.maze_point_exit]
+        [constants.maze_tile_exit]
 
     def __init__(self, starting_point):
         super().__init__('mari', starting_point)
@@ -79,7 +79,7 @@ class Mari(Character):
             return False
         if (beyond_x <= 0 or beyond_x >= len(maze[beyond_y]) - 1):
             return False
-        return maze[beyond_y][beyond_x] == constants.maze_point_empty
+        return maze[beyond_y][beyond_x].get_type() == constants.maze_tile_passage
 
     def _perform_push(self, maze, translation):
         lx, ly = self.get_location()
@@ -111,6 +111,6 @@ class Mari(Character):
         lx, ly = self.get_location()
         tx, ty = self.translations[self.get_facing()]
         x, y = Point(lx + tx, ly + ty)
-        maze[y][x] = constants.maze_point_empty
+        maze[y][x] = Passage()
         self.__busy = False
         send_message("")
