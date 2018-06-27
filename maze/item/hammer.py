@@ -13,10 +13,7 @@ class Hammer:
         self.__is_carried = False
 
     def render(self, factory):
-        return factory.render_entity(self.__location, self)
-
-    def render_value(self):
-        return constants.hammer
+        return factory.render_entity(self.__location, constants.hammer)
 
     def get_location(self):
         return self.__location

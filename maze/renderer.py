@@ -38,10 +38,10 @@ class Renderer:
         self.__w_sight_range = math.floor(len(maze[0]) / 5)
         self.__player_location = player_location
 
-    def render_entity(self, current, entity):
+    def render_entity(self, current, render_value):
         if self.__fog_of_war and not self._is_within_line_of_sight(current):
             return DARK_SHADE
-        return entity.render_value()
+        return render_value
 
     def render_tile(self, current, tile):
         if self.__fog_of_war and not self._is_within_line_of_sight(current):

@@ -15,10 +15,10 @@ class Troll(Character):
         [maze_point for k, maze_point in list(constants.character.items())]
 
     def __init__(self, id, starting_point):
-        super().__init__(id, starting_point, constants.troll)
+        super().__init__(id, starting_point)
 
     def render(self, factory):
-        return factory.render_entity(self.get_location(), self)
+        return factory.render_entity(self.get_location(), constants.troll)
 
     def move(self, maze, player_location):
         location = self.get_location()

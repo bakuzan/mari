@@ -15,14 +15,10 @@ class Character:
         constants.hammer
     ]
 
-    def __init__(self, id, starting_point, render_value=None):
+    def __init__(self, id, starting_point):
         self.id = id
         self.__facing = 'up'
         self.__location = starting_point
-        self.__render = render_value
-
-    def render_value(self):
-        return self.__render
 
     def render(self):
         pass
