@@ -78,9 +78,6 @@ class Maze:
 
                 if current_point == player_location:
                     display.append(self.player.render())
-                elif not self.hammer.is_carried() and current_point == hammer_location:
-                    display.append(
-                        render_factory.render_square(current_point, self.hammer.render()))
                 elif current_point in [t.get_location() for t in self.trolls]:
                     trolls = [
                         t for t in self.trolls if current_point == t.get_location()]
@@ -93,6 +90,9 @@ class Maze:
                             render_factory.render_square(current_point, col))
                         self.trolls = [
                             t for t in self.trolls if t.id != troll.id]
+                elif not self.hammer.is_carried() and current_point == hammer_location:
+                    display.append(
+                        render_factory.render_square(current_point, self.hammer.render()))
                 else:
                     display.append(
                         render_factory.render_square(current_point, col))
@@ -111,10 +111,12 @@ class Maze:
         action = constants.key_press_action.get(key)
         if self.is_ready():
             if direction:
-                self.message = self.player.move(direction)
+                self.message = self.player.move(
+                    self.layout, direction, hammer=self.hammer, send_message=self.__window.set_alert)
                 self.render()
             elif action:
-                self.message = self.player.do(action)
+                self.message = self.player.do(
+                    self.layout, action, send_message=self.__window.set_alert)
                 self.render()
 
     def is_escaped(self):
@@ -130,7 +132,7 @@ class Maze:
                           for y, row in enumerate(self.layout) if constants.maze_point_exit in row)
         path = a_star_search.can_find_path(
             self.layout, player_location, exit_point)
-        if len(path) > 1 and self.player.can_move(path[1]):
+        if len(path) > 1 and self.player.can_move(self.layout, path[1]):
             return True
         else:
             # TODO
@@ -143,7 +145,7 @@ class Maze:
     def game_is_playable(self):
         is_playable = (
             not self.is_escaped() and
-            (not self.player or not self.player.is_caught()) and
+            (not self.player or not self.player.is_caught(self.trolls)) and
             (not self.player or self.is_solvable())
         )
 
@@ -159,7 +161,7 @@ class Maze:
     def _display_game_ended_message(self):
         if self.is_escaped():
             self.__window.set_alert("Mari escaped!\nYou win!")
-        elif self.player.is_caught():
+        elif self.player.is_caught(self.trolls):
             self.__window.set_alert("Mari was caught!\nYou lose!")
         elif not self.is_solvable():
             self.__window.set_alert("Mari is trapped!\nYou lose!")
@@ -170,8 +172,8 @@ class Maze:
 
     def _place_entities(self):
         if not self.player:
-            self.player = Mari(self, self._get_random_point(True))
-            self.trolls = [Troll(i, self.layout, self._get_random_point())
+            self.player = Mari(self._get_random_point(True))
+            self.trolls = [Troll(i, self._get_random_point())
                            for i in range(0, self.__troll_count)]
             self.hammer = Hammer(self._get_random_point())
 
@@ -198,7 +200,7 @@ class Maze:
         for troll in self.trolls:
             t_x, t_y = troll.get_location()
             if not self.layout[t_y][t_x] == constants.maze_point_wall:
-                troll.move(player_location)
+                troll.move(self.layout, player_location)
             else:
                 self.trolls = [t for t in self.trolls if t.id != troll.id]
         self.render()

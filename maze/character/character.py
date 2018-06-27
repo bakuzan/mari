@@ -15,58 +15,60 @@ class Character:
         constants.hammer
     ]
 
-    def __init__(self, id, maze, starting_point):
+    def __init__(self, id, starting_point):
         self.id = id
-        self.maze = maze
-        self.facing = 'up'
-        self.location = starting_point
+        self.__facing = 'up'
+        self.__location = starting_point
 
     def render(self):
         return "@"
 
     def get_location(self):
-        return self.location
+        return self.__location
+    
+    def set_location(self, location):
+        self.__location = location
 
     def get_facing(self):
-        return self.facing
+        return self.__facing
 
-    def move(self, direction):
+    def move(self, maze, direction):
         if not self._is_facing(direction):
             self.turn(direction)
             return True
         else:
-            translation = Character.translations[self.facing]
-            if self._can_move(translation):
-                self._perform_move(translation)
+            translation = Character.translations[self.__facing]
+            if self._can_move(maze, translation):
+                self._perform_move(maze, translation)
                 return True
-            elif self._can_push(translation):
-                self._perform_push(translation)
+            elif self._can_push(maze, translation):
+                self._perform_push(maze, translation)
                 return True
             else:
                 return False
 
     def turn(self, direction):
-        self.facing = direction
+        self.__facing = direction
 
     """
     internals
     """
 
     def _is_facing(self, direction):
-        return self.facing == direction
+        return self.__facing == direction
 
-    def _can_move(self, translation):
-        target_y = self.location.y + translation.y
-        target_x = self.location.x + translation.x
-        return self.maze[target_y][target_x] in self.valid_move_targets
+    def _can_move(self, maze, translation):
+        target_y = self.__location.y + translation.y
+        target_x = self.__location.x + translation.x
+        return maze[target_y][target_x] in self.valid_move_targets
 
-    def _perform_move(self, translation):
-        target_y = self.location.y + translation.y
-        target_x = self.location.x + translation.x
-        self.location = Point(target_x, target_y)
+    def _perform_move(self, maze, translation):
+        target_y = self.__location.y + translation.y
+        target_x = self.__location.x + translation.x
+        self.__location = Point(target_x, target_y)
 
-    def _can_push(self, translation):
+    def _can_push(self, maze, translation):
         return False
 
-    def _perform_push(self, translation):
+    def _perform_push(self, maze, translation):
         pass

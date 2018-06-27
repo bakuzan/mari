@@ -12,6 +12,10 @@ EXIT_TAG = 'EXIT'
 
 
 class Viewer:
+    """
+    GUI to display game controls
+    """
+
     def __init__(self, **kwargs):
         (dw, dh) = kwargs.pop('dimensions', (0, 0))
         on_play, on_user_input, on_reset = kwargs.pop(

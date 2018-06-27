@@ -28,7 +28,7 @@ BOX_CAP_RIGHT = u'\u2555'
 
 class Renderer:
     """
-    Class that works out what to render in a given square
+    Class that works out what to render in a given square.
     """
 
     def __init__(self, maze, player_location, fog_of_war):
