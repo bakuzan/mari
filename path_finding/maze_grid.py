@@ -4,7 +4,8 @@ sys.path.append("../maze/")
 from maze import constants
 from maze.point import Point
 
-accessible_points = [constants.maze_tile_passage, constants.maze_tile_exit]
+accessible_points = [constants.maze_tile_passage,
+                     constants.maze_tile_tunnel, constants.maze_tile_exit]
 
 direction_list = [point for name, point in list(
     constants.translations.items())]
