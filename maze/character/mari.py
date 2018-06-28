@@ -5,6 +5,7 @@ from maze.point import Point
 from maze.character.character import Character
 from maze.tile.passage import Passage
 
+
 class Mari(Character):
 
     """
@@ -101,7 +102,9 @@ class Mari(Character):
         lx, ly = self.get_location()
         tx, ty = self.translations[self.get_facing()]
         x, y = Point(lx + tx, ly + ty)
-        return y != 0 and y != len(maze) - 1 and x != 0 and x != len(maze[0]) - 1
+        return (y != 0 and y != len(maze) - 1 and
+                x != 0 and x != len(maze[0]) - 1 and
+                maze[y][x].get_type() == constants.maze_tile_wall)
 
     def _perform_destroy_wall(self, maze, **kwargs):
         send_message = kwargs.pop('send_message')

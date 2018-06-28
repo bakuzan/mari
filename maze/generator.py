@@ -4,6 +4,7 @@ from maze import constants
 from maze.tile.passage import Passage
 from maze.tile.wall import Wall
 from maze.tile.exit import Exit
+from maze.tile.tunnel import Tunnel
 
 
 class MazeGenerator:
@@ -52,6 +53,10 @@ class MazeGenerator:
             if animate:
                 self._render(grid)
                 sleep(0.05)
+
+        grid = self._carve_tunnels(grid)
+        if animate:
+            self._render(grid)
 
         grid = self._cut_exit(grid)
         if animate:
@@ -102,6 +107,17 @@ class MazeGenerator:
 
         e_x, e_y = exit_point
         grid[e_y][e_x] = Exit()
+        return grid
+
+    def _carve_tunnels(self, grid):
+        # TODO
+        # ensure tunnels are a minimum distance from each other
+        # ensure tunnels don't block the exit route (?)
+        for i in [1,1,2,2]:
+            px, py = None, None
+            while not px and not py or grid[py][px].get_type() != constants.maze_tile_passage:
+                px, py = randrange(self.wMax), randrange(self.hMax)
+            grid[py][px] = Tunnel(i)
         return grid
 
     def _generate_exit_options(self, options):

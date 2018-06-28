@@ -12,6 +12,7 @@ class Character:
 
     valid_move_targets = [
         constants.maze_tile_passage,
+        constants.maze_tile_tunnel,
         constants.hammer
     ]
 
@@ -65,7 +66,23 @@ class Character:
     def _perform_move(self, maze, translation):
         target_y = self.__location.y + translation.y
         target_x = self.__location.x + translation.x
-        self.__location = Point(target_x, target_y)
+        location = Point(target_x, target_y)
+        tile = maze[target_y][target_x]
+        if tile.get_type() != constants.maze_tile_tunnel:
+            self.__location = location
+        else:
+            self.__location = self._travel_tunnel(maze, tile)
+
+    def _travel_tunnel(self, maze, tunnel_entrance_tile):
+        tunnel_num = tunnel_entrance_tile.get_tunnel_number()
+        entrance_id = tunnel_entrance_tile.get_tunnel_identifier()
+
+        exit_x, exit_y = next(Point(x, y) for y, row in enumerate(maze) for x, tile in enumerate(maze[y])
+                              if tile.get_type() == constants.maze_tile_tunnel and
+                              tile.get_tunnel_number() == tunnel_num and
+                              tile.get_tunnel_identifier() != entrance_id)
+
+        return Point(exit_x, exit_y)
 
     def _can_push(self, maze, translation):
         return False

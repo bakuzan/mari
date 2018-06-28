@@ -85,7 +85,8 @@ class Maze:
                     if tile.get_type() != constants.maze_tile_wall:
                         display.append(troll.render(render_factory))
                     else:
-                        display.append(tile.render(render_factory, current_point))
+                        display.append(tile.render(
+                            render_factory, current_point))
                         self.trolls = [
                             t for t in self.trolls if t.id != troll.id]
 
