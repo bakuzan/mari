@@ -1,14 +1,8 @@
 import os
 import tkinter as tk
-from tkinter.font import Font
 
 __dirname = os.path.dirname(__file__)
 window_icon = os.path.join(__dirname, '../assets/icon.ico')
-
-BOLD_TAG = 'BOLD'
-PLAYER_TAG = 'PLAYER'
-TROLL_TAG = 'TROLL'
-EXIT_TAG = 'EXIT'
 
 
 class Viewer:
@@ -54,10 +48,6 @@ class Viewer:
         self.__display = tk.Text(
             self.__container, state=tk.DISABLED, width=display_width, height=display_height)
         self.__display.grid(padx=5, pady=5)
-        self.__display.tag_configure(BOLD_TAG, font=Font(weight='bold'))
-        self.__display.tag_configure(PLAYER_TAG, background='green')
-        self.__display.tag_configure(TROLL_TAG, background='red')
-        self.__display.tag_configure(EXIT_TAG, background='magenta')
 
         self.__alert = tk.Label(self.__container, textvariable=self.__message)
         self.__alert.grid()
@@ -89,17 +79,6 @@ class Viewer:
         self.__display.configure(state=tk.NORMAL)
         self.__display.delete(0.0, 'end')
         self.__display.insert(0.0, text)
-
-        # for i, s in enumerate(text):
-        #     if s in ['T', '>', 'v', '^', '<', 'X']:
-        #         start, end = float(i), float(i+1)
-        #         self.__display.tag_add(BOLD_TAG, start, end)
-        #         if s in ['T', '>', 'v', '^', '<']:
-        #             entity_type = TROLL_TAG if s == 'T' else PLAYER_TAG
-        #             self.__display.tag_add(entity_type, start, end)
-        #         else:
-        #             self.__display.tag_add(EXIT_TAG, start, end)
-
         self.__display.configure(state=tk.DISABLED)
         self.__root.update_idletasks()
 
